@@ -24,7 +24,7 @@ type Product = {
         name: string;
     } | null;
     imageURL: string | null;
-    publishForSale: boolean;
+    publishForSale: boolean | null;
     createdAT: Date;
     updatedAt: Date;
     enterpriseId: string;
@@ -184,7 +184,7 @@ export const productsTableColumns: ColumnDef<Product>[] = [
         accessorKey: "publishForSale",
         header: "Publicado",
         cell: ({ row }) => {
-            const isPublished = row.original.publishForSale;
+            const isPublished = row.original.publishForSale ?? false;
             return (
                 <span className={`text-xs px-2 py-1 rounded-full ${isPublished
                     ? "bg-green-100 text-green-700"
