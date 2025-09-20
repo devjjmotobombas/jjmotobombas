@@ -2,23 +2,25 @@
 
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
 import { z } from "zod";
 
 import { db } from "@/db";
 import { suppliersTable } from "@/db/schema";
-import { auth } from "@/lib/auth";
 import { actionClient } from "@/lib/next-safe-action";
 
 export const deleteSupplier = actionClient
     .schema(z.object({ id: z.string().uuid() }))
     .action(async ({ parsedInput }) => {
-        const session = await auth.api.getSession({
-            headers: await headers(),
+        // Busca a primeira (e única) empresa do banco
+        const enterprise = await db.query.enterprisesTable.findFirst({
+            columns: {
+                id: true,
+            },
         });
 
-        if (!session?.user) throw new Error("Unauthorized");
-        if (!session.user.enterprise?.id) throw new Error("Enterprise not found");
+        if (!enterprise) {
+            throw new Error("Enterprise not found");
+        }
 
         const { id } = parsedInput;
 

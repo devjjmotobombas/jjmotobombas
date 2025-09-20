@@ -4,11 +4,9 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
 
 import { db } from "@/db";
 import { budgetsTable } from "@/db/schema";
-import { auth } from "@/lib/auth";
 import { actionClient } from "@/lib/next-safe-action";
 
 import { upsertBudgetSchema } from "./schema";
@@ -18,12 +16,15 @@ dayjs.extend(utc);
 export const upsertBudget = actionClient
     .schema(upsertBudgetSchema)
     .action(async ({ parsedInput }) => {
-        const session = await auth.api.getSession({
-            headers: await headers(),
+        // Busca a primeira (e única) empresa do banco
+        const enterprise = await db.query.enterprisesTable.findFirst({
+            columns: {
+                id: true,
+            },
         });
 
-        if (!session?.user?.enterprise?.id) {
-            throw new Error("Unauthorized");
+        if (!enterprise) {
+            throw new Error("Enterprise not found");
         }
 
         const { id, clientId, items, total, validUntil, status } = parsedInput;
@@ -60,7 +61,7 @@ export const upsertBudget = actionClient
                     totalInCents: totalInCents,
                     validUntil: dayjs(validUntil).utc().toDate(),
                     status,
-                    enterpriseId: session.user.enterprise.id,
+                    enterpriseId: enterprise.id,
                 })
                 .returning({ id: budgetsTable.id });
 

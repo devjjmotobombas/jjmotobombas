@@ -2,12 +2,10 @@
 
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
 import { z } from "zod";
 
 import { db } from "@/db";
 import { budgetsTable } from "@/db/schema";
-import { auth } from "@/lib/auth";
 import { actionClient } from "@/lib/next-safe-action";
 
 const updateBugdetStatusSchema = z.object({
@@ -18,11 +16,14 @@ const updateBugdetStatusSchema = z.object({
 export const updateBugdetStatus = actionClient
     .schema(updateBugdetStatusSchema)
     .action(async ({ parsedInput }) => {
-        const session = await auth.api.getSession({ headers: await headers() });
-        if (!session?.user) {
-            throw new Error("Unauthorized");
-        }
-        if (!session.user.enterprise?.id) {
+        // Busca a primeira (e única) empresa do banco
+        const enterprise = await db.query.enterprisesTable.findFirst({
+            columns: {
+                id: true,
+            },
+        });
+
+        if (!enterprise) {
             throw new Error("Enterprise not found");
         }
 

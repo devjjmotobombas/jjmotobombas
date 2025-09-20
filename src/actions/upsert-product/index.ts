@@ -4,11 +4,9 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
 
 import { db } from "@/db";
 import { productsTable } from "@/db/schema";
-import { auth } from "@/lib/auth";
 import { actionClient } from "@/lib/next-safe-action";
 
 import { upsertProductSchema } from "./schema";
@@ -18,12 +16,16 @@ dayjs.extend(utc);
 export const upsertProduct = actionClient
     .schema(upsertProductSchema)
     .action(async ({ parsedInput }) => {
-        const session = await auth.api.getSession({
-            headers: await headers(),
+        // Busca a primeira (e única) empresa do banco
+        const enterprise = await db.query.enterprisesTable.findFirst({
+            columns: {
+                id: true,
+            },
         });
 
-        if (!session?.user) throw new Error("Unauthorized");
-        if (!session.user.enterprise?.id) throw new Error("Enterprise not found");
+        if (!enterprise) {
+            throw new Error("Enterprise not found");
+        }
 
         const {
             id,
@@ -75,7 +77,7 @@ export const upsertProduct = actionClient
                     quantity_in_stock: quantity,
                     stockValueInCents: purchasePriceInCents * quantity,
                     stock_status: "in_stock",
-                    enterpriseId: session.user.enterprise.id,
+                    enterpriseId: enterprise.id,
                 })
                 .returning({ id: productsTable.id });
 

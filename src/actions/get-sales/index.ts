@@ -1,21 +1,22 @@
 "use server";
 
 import { desc, eq } from "drizzle-orm";
-import { headers } from "next/headers";
 
 import { db } from "@/db";
 import { clientsTable, salesTable } from "@/db/schema";
-import { auth } from "@/lib/auth";
 import { actionClient } from "@/lib/next-safe-action";
 
 export const getSales = actionClient
     .action(async () => {
-        const session = await auth.api.getSession({
-            headers: await headers(),
+        // Busca a primeira (e única) empresa do banco
+        const enterprise = await db.query.enterprisesTable.findFirst({
+            columns: {
+                id: true,
+            },
         });
 
-        if (!session?.user?.enterprise?.id) {
-            throw new Error("Unauthorized");
+        if (!enterprise) {
+            throw new Error("Enterprise not found");
         }
 
         const sales = await db

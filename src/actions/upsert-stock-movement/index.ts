@@ -2,11 +2,9 @@
 
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
 
 import { db } from "@/db";
 import { productsTable, stockMovements } from "@/db/schema";
-import { auth } from "@/lib/auth";
 import { actionClient } from "@/lib/next-safe-action";
 
 import { upsertStockMovementSchema } from "./schema";
@@ -16,12 +14,16 @@ import { upsertStockMovementSchema } from "./schema";
 export const upsertStockMovement = actionClient
     .schema(upsertStockMovementSchema)
     .action(async ({ parsedInput }) => {
-        const session = await auth.api.getSession({
-            headers: await headers(),
+        // Busca a primeira (e única) empresa do banco
+        const enterprise = await db.query.enterprisesTable.findFirst({
+            columns: {
+                id: true,
+            },
         });
 
-        if (!session?.user) throw new Error("Unauthorized");
-        if (!session.user.enterprise?.id) throw new Error("Enterprise not found");
+        if (!enterprise) {
+            throw new Error("Enterprise not found");
+        }
 
         const {
             productId,
@@ -33,7 +35,7 @@ export const upsertStockMovement = actionClient
         // Inserir o movimento de estoque
         await db.insert(stockMovements).values({
             productId,
-            enterpriseId: session.user.enterprise.id,
+            enterpriseId: enterprise.id,
             movementType,
             quantity,
             reason,

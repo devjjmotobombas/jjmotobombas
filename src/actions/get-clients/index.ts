@@ -1,24 +1,26 @@
 "use server";
 
 import { eq } from "drizzle-orm";
-import { headers } from "next/headers";
 
 import { db } from "@/db";
 import { clientsTable } from "@/db/schema";
-import { auth } from "@/lib/auth";
 import { actionClient } from "@/lib/next-safe-action";
 
 export const getClients = actionClient
     .action(async () => {
-        const session = await auth.api.getSession({
-            headers: await headers(),
+        // Busca a primeira (e única) empresa do banco
+        const enterprise = await db.query.enterprisesTable.findFirst({
+            columns: {
+                id: true,
+            },
         });
 
-        if (!session?.user) throw new Error("Unauthorized");
-        if (!session.user.enterprise?.id) throw new Error("Enterprise not found");
+        if (!enterprise) {
+            throw new Error("Enterprise not found");
+        }
 
         const clients = await db.query.clientsTable.findMany({
-            where: eq(clientsTable.enterpriseId, session.user.enterprise.id),
+            where: eq(clientsTable.enterpriseId, enterprise.id),
             columns: {
                 id: true,
                 name: true,

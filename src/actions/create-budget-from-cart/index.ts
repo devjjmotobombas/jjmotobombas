@@ -4,11 +4,9 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
 
 import { db } from "@/db";
 import { budgetsTable, clientsTable } from "@/db/schema";
-import { auth } from "@/lib/auth";
 import { actionClient } from "@/lib/next-safe-action";
 
 import { createBudgetFromCartSchema } from "./schema";
@@ -19,12 +17,16 @@ dayjs.extend(utc);
 export const createBudgetFromCart = actionClient
     .schema(createBudgetFromCartSchema)
     .action(async ({ parsedInput: { items, clientName, clientPhone } }) => {
-        const session = await auth.api.getSession({
-            headers: await headers(),
+        // Busca a primeira (e única) empresa do banco
+        const enterprise = await db.query.enterprisesTable.findFirst({
+            columns: {
+                id: true,
+            },
         });
 
-        if (!session?.user) throw new Error("Unauthorized");
-        if (!session.user.enterprise?.id) throw new Error("Enterprise not found");
+        if (!enterprise) {
+            throw new Error("Enterprise not found");
+        }
 
         // Buscar ou criar cliente
         let client = await db.query.clientsTable.findFirst({
@@ -35,7 +37,7 @@ export const createBudgetFromCart = actionClient
             const newClient = await db.insert(clientsTable).values({
                 name: clientName,
                 phoneNumber: clientPhone,
-                enterpriseId: session.user.enterprise.id,
+                enterpriseId: enterprise.id,
             }).returning();
 
             client = newClient[0];
@@ -58,7 +60,7 @@ export const createBudgetFromCart = actionClient
             totalInCents: totalInCents,
             validUntil: validUntil,
             clientId: client.id,
-            enterpriseId: session.user.enterprise.id,
+            enterpriseId: enterprise.id,
             status: "offered",
         }).returning();
 

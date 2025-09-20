@@ -4,11 +4,9 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
 
 import { db } from "@/db";
 import { suppliersTable } from "@/db/schema";
-import { auth } from "@/lib/auth";
 import { actionClient } from "@/lib/next-safe-action";
 
 import { upsertSupplierSchema } from "./shema";
@@ -19,12 +17,16 @@ dayjs.extend(utc);
 export const upserSupplier = actionClient
     .schema(upsertSupplierSchema)
     .action(async ({ parsedInput }) => {
-        const session = await auth.api.getSession({
-            headers: await headers(),
+        // Busca a primeira (e única) empresa do banco
+        const enterprise = await db.query.enterprisesTable.findFirst({
+            columns: {
+                id: true,
+            },
         });
 
-        if (!session?.user) throw new Error("Unauthorized");
-        if (!session.user.enterprise?.id) throw new Error("Enterprise not found");
+        if (!enterprise) {
+            throw new Error("Enterprise not found");
+        }
 
         const {
             id,
@@ -46,7 +48,7 @@ export const upserSupplier = actionClient
                 .insert(suppliersTable)
                 .values({
                     name,
-                    enterpriseId: session.user.enterprise.id,
+                    enterpriseId: enterprise.id,
                 })
                 .returning({ id: suppliersTable.id });
 

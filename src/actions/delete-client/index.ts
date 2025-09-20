@@ -2,12 +2,10 @@
 
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
 import { z } from "zod";
 
 import { db } from "@/db";
 import { clientsTable } from "@/db/schema";
-import { auth } from "@/lib/auth";
 import { actionClient } from "@/lib/next-safe-action";
 
 export const deleteClient = actionClient
@@ -17,19 +15,24 @@ export const deleteClient = actionClient
         }),
     )
     .action(async ({ parsedInput }) => {
-        const session = await auth.api.getSession({
-            headers: await headers(),
+        // Busca a primeira (e única) empresa do banco
+        const enterprise = await db.query.enterprisesTable.findFirst({
+            columns: {
+                id: true,
+            },
         });
-        if (!session?.user) {
-            throw new Error("Unauthorized");
+
+        if (!enterprise) {
+            throw new Error("Enterprise not found");
         }
+
         const client = await db.query.clientsTable.findFirst({
             where: eq(clientsTable.id, parsedInput.id),
         });
         if (!client) {
             throw new Error("Cliente não encontrado");
         }
-        if (client.enterpriseId !== session.user.enterprise?.id) {
+        if (client.enterpriseId !== enterprise.id) {
             throw new Error("Cliente não encontrado");
         }
         await db.delete(clientsTable).where(eq(clientsTable.id, parsedInput.id));

@@ -2,11 +2,9 @@
 
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
 
 import { db } from "@/db";
 import { productsTable, saleItemsTable, salesTable, stockMovements } from "@/db/schema";
-import { auth } from "@/lib/auth";
 import { actionClient } from "@/lib/next-safe-action";
 
 import { cancelSaleSchema } from "./schema";
@@ -14,12 +12,15 @@ import { cancelSaleSchema } from "./schema";
 export const cancelSale = actionClient
     .schema(cancelSaleSchema)
     .action(async ({ parsedInput }) => {
-        const session = await auth.api.getSession({
-            headers: await headers(),
+        // Busca a primeira (e única) empresa do banco
+        const enterprise = await db.query.enterprisesTable.findFirst({
+            columns: {
+                id: true,
+            },
         });
 
-        if (!session?.user?.enterprise?.id) {
-            throw new Error("Unauthorized");
+        if (!enterprise) {
+            throw new Error("Enterprise not found");
         }
 
         const { id } = parsedInput;
@@ -68,7 +69,7 @@ export const cancelSale = actionClient
             // Registrar movimento de entrada de estoque (reposição)
             await db.insert(stockMovements).values({
                 productId: saleItem.productId,
-                enterpriseId: session.user.enterprise.id,
+                enterpriseId: enterprise.id,
                 movementType: "entry",
                 quantity: saleItem.productQty,
                 reason: "cancelamento de venda",

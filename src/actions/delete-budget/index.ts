@@ -2,12 +2,10 @@
 
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
 import { z } from "zod";
 
 import { db } from "@/db";
 import { budgetsTable } from "@/db/schema";
-import { auth } from "@/lib/auth";
 import { actionClient } from "@/lib/next-safe-action";
 
 export const deleteBudget = actionClient
@@ -17,11 +15,15 @@ export const deleteBudget = actionClient
         }),
     )
     .action(async ({ parsedInput }) => {
-        const session = await auth.api.getSession({
-            headers: await headers(),
+        // Busca a primeira (e única) empresa do banco
+        const enterprise = await db.query.enterprisesTable.findFirst({
+            columns: {
+                id: true,
+            },
         });
-        if (!session?.user) {
-            throw new Error("Unauthorized");
+
+        if (!enterprise) {
+            throw new Error("Enterprise not found");
         }
 
         const budget = await db.query.budgetsTable.findFirst({
@@ -32,7 +34,7 @@ export const deleteBudget = actionClient
             throw new Error("Orçamento não encontrado");
         }
 
-        if (budget.enterpriseId !== session.user.enterprise?.id) {
+        if (budget.enterpriseId !== enterprise.id) {
             throw new Error("Orçamento não encontrado");
         }
 

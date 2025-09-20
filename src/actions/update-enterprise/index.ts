@@ -4,11 +4,9 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
 
 import { db } from "@/db";
 import { enterprisesTable } from "@/db/schema";
-import { auth } from "@/lib/auth";
 import { actionClient } from "@/lib/next-safe-action";
 
 import { updateEnterpriseSchema } from "./schema";
@@ -18,15 +16,14 @@ dayjs.extend(utc);
 export const updateEnterprise = actionClient
   .schema(updateEnterpriseSchema)
   .action(async ({ parsedInput }) => {
-    const session = await auth.api.getSession({
-      headers: await headers(),
+    // Busca a primeira (e única) empresa do banco
+    const enterprise = await db.query.enterprisesTable.findFirst({
+      columns: {
+        id: true,
+      },
     });
 
-    if (!session?.user) {
-      throw new Error("Unauthorized");
-    }
-
-    if (!session?.user.enterprise?.id) {
+    if (!enterprise) {
       throw new Error("Enterprise not found");
     }
 
@@ -44,7 +41,7 @@ export const updateEnterprise = actionClient
       state,
     } = parsedInput;
 
-    const enterpriseId = id;
+    const enterpriseId = enterprise.id;
 
     if (enterpriseId) {
       await db
