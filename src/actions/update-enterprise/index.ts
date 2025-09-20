@@ -28,7 +28,6 @@ export const updateEnterprise = actionClient
     }
 
     const {
-      id,
       name,
       phoneNumber,
       register,
