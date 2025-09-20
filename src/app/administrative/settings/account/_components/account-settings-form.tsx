@@ -11,6 +11,7 @@ import z from "zod";
 
 import { updateUserData } from "@/actions/update-user-data";
 import { updateUserDataSchema } from "@/actions/update-user-data/schema";
+import { uploadUserAvatar } from "@/actions/upsert-user-avatar";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -38,6 +39,8 @@ interface AccountSettingsFormProps {
 
 export function AccountSettingsForm({ user }: AccountSettingsFormProps) {
     const [avatarPreview, setAvatarPreview] = useState<string | null>(user.avatarImageURL || null);
+    const [avatarFile, setAvatarFile] = useState<File | null>(null);
+    const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
 
     const form = useForm<z.infer<typeof updateUserDataSchema>>({
         resolver: zodResolver(updateUserDataSchema),
@@ -60,25 +63,48 @@ export function AccountSettingsForm({ user }: AccountSettingsFormProps) {
     });
 
     async function onSubmit(values: z.infer<typeof updateUserDataSchema>) {
-        execute(values);
+        try {
+            // Atualiza os dados do usuário
+            await execute(values);
+
+            // Se houver um arquivo de avatar, faz o upload
+            if (avatarFile) {
+                setIsUploadingAvatar(true);
+                try {
+                    const formData = new FormData();
+                    formData.append("photo", avatarFile);
+
+                    // Faz upload e atualiza avatar direto no banco
+                    await uploadUserAvatar(formData, user.id);
+                    toast.success("Foto de perfil atualizada com sucesso!");
+                } catch (error) {
+                    console.error("Erro ao fazer upload da imagem:", error);
+                    toast.error("Erro ao enviar imagem. Os dados foram atualizados com sucesso.");
+                } finally {
+                    setIsUploadingAvatar(false);
+                }
+            }
+        } catch (error) {
+            console.error("Erro ao atualizar usuário:", error);
+        }
     }
 
     const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
+            setAvatarFile(file);
             const reader = new FileReader();
             reader.onload = (e) => {
                 const result = e.target?.result as string;
                 setAvatarPreview(result);
-                form.setValue("avatarImageURL", result);
             };
             reader.readAsDataURL(file);
         }
     };
 
     const removeAvatar = () => {
-        setAvatarPreview(null);
-        form.setValue("avatarImageURL", "");
+        setAvatarPreview(user.avatarImageURL || null);
+        setAvatarFile(null);
     };
 
     return (
@@ -237,9 +263,9 @@ export function AccountSettingsForm({ user }: AccountSettingsFormProps) {
                                 type="submit"
                                 className="w-full"
                                 variant="default"
-                                disabled={isPending}
+                                disabled={isPending || isUploadingAvatar}
                             >
-                                {isPending ? (
+                                {isPending || isUploadingAvatar ? (
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                 ) : (
                                     "Salvar alterações"

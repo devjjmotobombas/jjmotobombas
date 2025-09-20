@@ -11,6 +11,7 @@ import z from "zod";
 
 import { updateEnterprise } from "@/actions/update-enterprise";
 import { updateEnterpriseSchema } from "@/actions/update-enterprise/schema";
+import { uploadEnterpriseProfilePicture } from "@/actions/upsert-enterprise-profile-picture";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -38,6 +39,8 @@ interface EnterpriseSettingsFormProps {
 
 export function EnterpriseSettingsForm({ enterprise }: EnterpriseSettingsFormProps) {
     const [avatarPreview, setAvatarPreview] = useState<string | null>(enterprise.avatarImageURL || null);
+    const [avatarFile, setAvatarFile] = useState<File | null>(null);
+    const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
 
     const form = useForm<z.infer<typeof updateEnterpriseSchema>>({
         resolver: zodResolver(updateEnterpriseSchema),
@@ -66,24 +69,48 @@ export function EnterpriseSettingsForm({ enterprise }: EnterpriseSettingsFormPro
     });
 
     async function onSubmit(values: z.infer<typeof updateEnterpriseSchema>) {
-        execute(values);
+        try {
+            // Atualiza os dados da empresa
+            await execute(values);
+
+            // Se houver um arquivo de avatar, faz o upload
+            if (avatarFile) {
+                setIsUploadingAvatar(true);
+                try {
+                    const formData = new FormData();
+                    formData.append("photo", avatarFile);
+
+                    // Faz upload e atualiza avatar direto no banco
+                    await uploadEnterpriseProfilePicture(formData, enterprise.id);
+                    toast.success("Logo da empresa atualizada com sucesso!");
+                } catch (error) {
+                    console.error("Erro ao fazer upload da imagem:", error);
+                    toast.error("Erro ao enviar imagem. Os dados foram atualizados com sucesso.");
+                } finally {
+                    setIsUploadingAvatar(false);
+                }
+            }
+        } catch (error) {
+            console.error("Erro ao atualizar empresa:", error);
+        }
     }
 
     const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
+            setAvatarFile(file);
             const reader = new FileReader();
             reader.onload = (e) => {
                 const result = e.target?.result as string;
                 setAvatarPreview(result);
-                // Aqui você pode implementar upload da imagem se necessário
             };
             reader.readAsDataURL(file);
         }
     };
 
     const removeAvatar = () => {
-        setAvatarPreview(null);
+        setAvatarPreview(enterprise.avatarImageURL || null);
+        setAvatarFile(null);
     };
 
     return (
@@ -357,9 +384,9 @@ export function EnterpriseSettingsForm({ enterprise }: EnterpriseSettingsFormPro
                                 type="submit"
                                 className="w-full"
                                 variant="default"
-                                disabled={isPending}
+                                disabled={isPending || isUploadingAvatar}
                             >
-                                {isPending ? (
+                                {isPending || isUploadingAvatar ? (
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                 ) : (
                                     "Salvar alterações"

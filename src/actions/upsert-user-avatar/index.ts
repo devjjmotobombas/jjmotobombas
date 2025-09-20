@@ -4,9 +4,9 @@ import { put } from '@vercel/blob'
 import { eq } from 'drizzle-orm'
 
 import { db } from '@/db'
-import { enterprisesTable } from '@/db/schema'
+import { usersTable } from '@/db/schema'
 
-export async function uploadEnterpriseProfilePicture(formData: FormData, enterpriseId: string) {
+export async function uploadUserAvatar(formData: FormData, userId: string) {
     const file = formData.get('photo') as File
 
     if (!file || file.size === 0) {
@@ -23,9 +23,9 @@ export async function uploadEnterpriseProfilePicture(formData: FormData, enterpr
         token: process.env.BLOB_READ_WRITE_TOKEN,
     })
 
-    await db.update(enterprisesTable)
+    await db.update(usersTable)
         .set({ avatarImageURL: blob.url })
-        .where(eq(enterprisesTable.id, enterpriseId))
+        .where(eq(usersTable.id, userId))
 
     return { url: blob.url }
 }

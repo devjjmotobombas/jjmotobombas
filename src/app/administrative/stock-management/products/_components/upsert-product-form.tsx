@@ -11,6 +11,7 @@ import z from "zod";
 import { getProductCategories } from "@/actions/get-product-categories";
 import { getSuppliers } from "@/actions/get-suppliers";
 import { upsertProduct } from "@/actions/upsert-product";
+import { uploadProductImage } from "@/actions/upsert-product-image";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
@@ -46,9 +47,9 @@ const UpsertProductForm = ({ product, onSuccess }: upsertProductoForm) => {
     const [suppliers, setSuppliers] = React.useState<{ id: string; name: string }[]>([]);
     const [openCategoryCombobox, setOpenCategoryCombobox] = React.useState(false);
     const [openSupplierCombobox, setOpenSupplierCombobox] = React.useState(false);
-    const [, setImageFile] = React.useState<File>();
+    const [imageFile, setImageFile] = React.useState<File>();
     const [imagePreview, setImagePreview] = React.useState<string>();
-    const [isUploadingImage] = React.useState(false);
+    const [isUploadingImage, setIsUploadingImage] = React.useState(false);
 
     const form = useForm<z.infer<typeof formSchema>>({
         shouldUnregister: true,
@@ -120,7 +121,7 @@ const UpsertProductForm = ({ product, onSuccess }: upsertProductoForm) => {
         },
     });
 
-    const onSubmit = (values: z.infer<typeof formSchema>) => {
+    const onSubmit = async (values: z.infer<typeof formSchema>) => {
         console.log("Form values:", values);
         console.log("Form errors:", form.formState.errors);
 
@@ -136,7 +137,27 @@ const UpsertProductForm = ({ product, onSuccess }: upsertProductoForm) => {
         };
 
         console.log("Payload to send:", payload);
+
+        // Cria ou atualiza o produto
         upsertProductoAction.execute(payload);
+
+        // Se houver um arquivo de imagem, faz o upload após o produto ser salvo
+        if (imageFile && product?.id) {
+            setIsUploadingImage(true);
+            try {
+                const formData = new FormData();
+                formData.append("image", imageFile);
+
+                // Faz upload da imagem
+                await uploadProductImage(formData, product.id);
+                toast.success("Imagem do produto enviada com sucesso!");
+            } catch (error) {
+                console.error("Erro ao fazer upload da imagem:", error);
+                toast.error("Erro ao enviar imagem. O produto foi salvo com sucesso.");
+            } finally {
+                setIsUploadingImage(false);
+            }
+        }
     };
 
     return (
