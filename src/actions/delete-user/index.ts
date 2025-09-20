@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 
 import { db } from "@/db";
-import { enterprisesTable, usersTable } from "@/db/schema";
+import { usersTable } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { actionClient } from "@/lib/next-safe-action";
 
@@ -24,10 +24,6 @@ export const deleteUser = actionClient.action(async () => {
     throw new Error("Usuário não encontrado");
   }
 
-  // Excluir empresa associada (se for proprietário)
-  await db
-    .delete(enterprisesTable)
-    .where(eq(enterprisesTable.ownerId, user.id));
 
   // Excluir usuário
   await db.delete(usersTable).where(eq(usersTable.id, user.id));
