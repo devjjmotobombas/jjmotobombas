@@ -41,7 +41,7 @@ interface StoreContentProps {
 export function StoreContent({ enterprise, initialProducts }: StoreContentProps) {
     const [products, setProducts] = useState<Product[]>(initialProducts);
     const [isLoading, setIsLoading] = useState(false);
-    const { cartItems, addToCart, getTotalItems } = useCart();
+    const { addToCart, getTotalItems } = useCart();
 
     const handleSearch = async (term: string) => {
         setIsLoading(true);
