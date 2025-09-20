@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "iGenda",
+  title: "JJMotobombas",
 };
 
 export default function AuthenticationLayout({

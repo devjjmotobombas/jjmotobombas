@@ -37,13 +37,13 @@ export default function Home() {
             <div className="flex-1 h-px bg-gray-300" />
           </div>
 
-          <Link href="#" className="w-full">
+          <Link href="/clients/store" className="w-full">
             <Button
               variant="link"
               className="w-full h-12 text-[#246caa]"
               size="lg"
             >
-              Fazer um orçamento
+              Visitar loja
             </Button>
           </Link>
         </div>

@@ -1,9 +1,15 @@
+import { Metadata } from "next";
 import { Suspense } from "react";
 
 import { getEnterprise } from "@/actions/get-enterprise";
 
 import { CartContent } from "../../store/_components/cart-content";
 import { Footer } from "../../store/_components/footer";
+
+export const metadata: Metadata = {
+    title: "JJMotobombas - Carrinho",
+};
+
 
 export default async function CartPage() {
     const enterpriseResult = await getEnterprise();

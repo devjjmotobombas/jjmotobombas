@@ -1,9 +1,15 @@
+import { Metadata } from "next";
 import { Suspense } from "react";
 
 import { getEnterprise } from "@/actions/get-enterprise";
 import { getProductsForStore } from "@/actions/get-products-for-store";
 
 import { StoreContent } from "./_components/store-content";
+
+export const metadata: Metadata = {
+    title: "JJMotobombas - Loja",
+};
+
 
 export default async function StorePage() {
     const [enterpriseResult, productsResult] = await Promise.all([
