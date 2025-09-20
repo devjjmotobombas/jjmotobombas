@@ -12,7 +12,7 @@ const AuthenticationPage = async () => {
     headers: await headers(),
   });
   if (session?.user) {
-    redirect("/administrative/product-management/products");
+    redirect("/administrative/sales-management/sales");
   }
 
   return (
