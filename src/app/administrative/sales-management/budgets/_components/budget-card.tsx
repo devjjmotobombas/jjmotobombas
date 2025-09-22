@@ -259,7 +259,7 @@ const BudgetCard = ({ budget, onEdit, onDelete }: BudgetCardProps) => {
                                 className="flex-1"
                                 disabled={budget.status === "canceled" || budget.status === "sold"}
                             >
-                                <Edit className="h-4 w-4 mr-2" />
+                                <Edit className="h-4 w-4" />
                                 {isExpired ? "Renovar orçamento" : "Editar"}
                             </Button>
 
@@ -270,7 +270,7 @@ const BudgetCard = ({ budget, onEdit, onDelete }: BudgetCardProps) => {
                                 className="flex-1"
                                 disabled={isExpired || budget.status === "canceled" || budget.status === "sold"}
                             >
-                                <X className="h-4 w-4 mr-2" />
+                                <X className="h-4 w-4" />
                                 Cancelar
                             </Button>
                         </div>
@@ -283,7 +283,7 @@ const BudgetCard = ({ budget, onEdit, onDelete }: BudgetCardProps) => {
                                 className="flex-1"
                                 disabled={isExpired || budget.status === "canceled" || budget.status === "sold"}
                             >
-                                <ShoppingCart className="h-4 w-4 mr-2" />
+                                <ShoppingCart className="h-4 w-4" />
                                 Criar venda
                             </Button>
 
@@ -294,7 +294,7 @@ const BudgetCard = ({ budget, onEdit, onDelete }: BudgetCardProps) => {
                                 className="flex-1"
                                 disabled={isExpired || budget.status === "canceled" || budget.status === "sold" || isExportingPDF}
                             >
-                                <FileDown className="h-4 w-4 mr-2" />
+                                <FileDown className="h-4 w-4" />
                                 {isExportingPDF ? "Exportando..." : "Baixar"}
                             </Button>
                         </div>

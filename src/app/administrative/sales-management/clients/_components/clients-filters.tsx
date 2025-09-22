@@ -33,24 +33,24 @@ export function ClientsFilters({ onFilterChange }: ClientsFiltersProps) {
   const hasActiveFilters = nameFilter || phoneFilter;
 
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex flex-1 flex-col gap-4 sm:flex-row sm:items-center">
-        <div className="relative max-w-sm flex-1">
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="relative flex-1">
           <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
           <Input
             placeholder="Buscar por nome..."
             value={nameFilter}
             onChange={(e) => handleNameChange(e.target.value)}
-            className="pl-9"
+            className="pl-9 text-sm"
           />
         </div>
-        <div className="relative max-w-sm flex-1">
+        <div className="relative flex-1">
           <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
           <Input
             placeholder="Buscar por telefone..."
             value={phoneFilter}
             onChange={(e) => handlePhoneChange(e.target.value)}
-            className="pl-9"
+            className="pl-9 text-sm"
           />
         </div>
       </div>
@@ -59,9 +59,9 @@ export function ClientsFilters({ onFilterChange }: ClientsFiltersProps) {
           variant="outline"
           size="sm"
           onClick={handleResetFilters}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 text-xs sm:text-sm"
         >
-          <X className="h-4 w-4" />
+          <X className="h-3 w-3 sm:h-4 sm:w-4" />
           Limpar filtros
         </Button>
       )}

@@ -14,8 +14,8 @@ const AddProductButton = () => {
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
                 <Button className="text-xs sm:text-sm">
-                    <Plus className="h-4 w-4" />
-                    <span className="hidden lg:inline">Adicionar produto</span>
+                    <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="hidden sm:inline">Adicionar produto</span>
                 </Button>
             </DialogTrigger>
             <UpsertProductForm onSuccess={() => setIsOpen(false)} />

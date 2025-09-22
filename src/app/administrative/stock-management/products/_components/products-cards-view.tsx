@@ -69,7 +69,7 @@ export function ProductsCardsView({ products }: ProductsCardsViewProps) {
     }
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {products.map((product) => {
                 const statusBadge = getStatusBadge(product.stock_status);
                 const stockQuantity = product.quantity_in_stock || 0;
@@ -79,10 +79,10 @@ export function ProductsCardsView({ products }: ProductsCardsViewProps) {
 
                 return (
                     <Card key={product.id} className="relative group hover:shadow-md transition-shadow">
-                        <CardHeader className="pb-3">
+                        <CardHeader className="pb-2">
                             <div className="flex items-start justify-between">
                                 <div className="flex-1 min-w-0">
-                                    <CardTitle className="text-base font-medium truncate">
+                                    <CardTitle className="text-sm font-medium truncate sm:text-base">
                                         {product.name}
                                     </CardTitle>
                                 </div>
@@ -92,7 +92,7 @@ export function ProductsCardsView({ products }: ProductsCardsViewProps) {
                             </div>
                         </CardHeader>
 
-                        <CardContent className="space-y-3">
+                        <CardContent className="space-y-2">
                             {/* Categoria e Status */}
                             <div className="flex items-center gap-2 flex-wrap">
                                 <Badge variant="secondary" className="text-xs">
@@ -116,20 +116,20 @@ export function ProductsCardsView({ products }: ProductsCardsViewProps) {
 
                             {/* Fornecedor */}
                             {product.supplier && (
-                                <div className="text-sm">
+                                <div className="text-xs sm:text-sm">
                                     <span className="text-muted-foreground">Fornecedor: </span>
                                     <span className="font-medium">{product.supplier.name}</span>
                                 </div>
                             )}
 
                             {/* Quantidade em estoque */}
-                            <div className="text-sm">
+                            <div className="text-xs sm:text-sm">
                                 <span className="text-muted-foreground">Estoque: </span>
                                 <span className="font-medium">{stockQuantity} unidades</span>
                             </div>
 
                             {/* Preços */}
-                            <div className="space-y-1 text-sm">
+                            <div className="space-y-1 text-xs sm:text-sm">
                                 <div className="flex justify-between">
                                     <span className="text-muted-foreground">Custo:</span>
                                     <span className="font-medium">{formatCurrency(purchasePrice)}</span>
@@ -147,7 +147,7 @@ export function ProductsCardsView({ products }: ProductsCardsViewProps) {
                             </div>
 
                             {/* Margem de lucro */}
-                            <div className="text-sm">
+                            <div className="text-xs sm:text-sm">
                                 <span className="text-muted-foreground">Margem: </span>
                                 <span className="font-medium text-green-600">
                                     {formatCurrency(salePrice - purchasePrice)}

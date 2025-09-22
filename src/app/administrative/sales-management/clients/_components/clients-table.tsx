@@ -92,14 +92,14 @@ export function ClientsTable({ clients }: ClientsTableProps) {
   return (
     <div className="space-y-4">
       <ClientsFilters onFilterChange={setFilters} />
-      <div className="rounded-md border">
+      <div className="rounded-md border overflow-x-auto">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} className="text-xs sm:text-sm">
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -120,7 +120,7 @@ export function ClientsTable({ clients }: ClientsTableProps) {
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="text-xs sm:text-sm">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),
@@ -133,7 +133,7 @@ export function ClientsTable({ clients }: ClientsTableProps) {
               <TableRow>
                 <TableCell
                   colSpan={clientsTableColumns.length}
-                  className="h-24 text-center"
+                  className="h-24 text-center text-xs sm:text-sm"
                 >
                   Nenhum cliente encontrado.
                 </TableCell>

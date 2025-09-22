@@ -16,17 +16,17 @@ export function ViewToggle({ view, onViewChange }: ViewToggleProps) {
                 variant={view === "table" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => onViewChange("table")}
-                className="h-8 w-8 p-0"
+                className="h-7 w-7 p-0 sm:h-8 sm:w-8"
             >
-                <List className="h-4 w-4" />
+                <List className="h-3 w-3 sm:h-4 sm:w-4" />
             </Button>
             <Button
                 variant={view === "cards" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => onViewChange("cards")}
-                className="h-8 w-8 p-0"
+                className="h-7 w-7 p-0 sm:h-8 sm:w-8"
             >
-                <Grid3X3 className="h-4 w-4" />
+                <Grid3X3 className="h-3 w-3 sm:h-4 sm:w-4" />
             </Button>
         </div>
     );

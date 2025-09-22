@@ -45,9 +45,9 @@ export function StockSearch({
     const hasActiveFilters = search || (category && category !== "all") || (supplierId && supplierId !== "all");
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             {/* Barra de pesquisa */}
-            <div className="flex gap-2">
+            <div className="flex flex-col gap-2 sm:flex-row sm:gap-2">
                 <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                     <Input
@@ -59,26 +59,28 @@ export function StockSearch({
                                 handleSearch();
                             }
                         }}
-                        className="pl-10"
+                        className="pl-10 text-sm"
                     />
                 </div>
-                <Button onClick={handleSearch} size="sm">
-                    Buscar
-                </Button>
-                {hasActiveFilters && (
-                    <Button onClick={handleClearFilters} variant="outline" size="sm">
-                        <X className="h-4 w-4 mr-1" />
-                        Limpar
+                <div className="flex gap-2">
+                    <Button onClick={handleSearch} size="sm" className="text-xs sm:text-sm">
+                        Buscar
                     </Button>
-                )}
+                    {hasActiveFilters && (
+                        <Button onClick={handleClearFilters} variant="outline" size="sm" className="text-xs sm:text-sm">
+                            <X className="h-3 w-3 mr-1 sm:h-4 sm:w-4" />
+                            Limpar
+                        </Button>
+                    )}
+                </div>
             </div>
 
             {/* Filtros */}
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
                 {/* Filtro por categoria */}
-                <div className="min-w-[200px]">
+                <div className="flex-1 min-w-0">
                     <Select value={category} onValueChange={onCategoryChange}>
-                        <SelectTrigger>
+                        <SelectTrigger className="text-sm">
                             <SelectValue placeholder="Todas as categorias" />
                         </SelectTrigger>
                         <SelectContent>
@@ -93,9 +95,9 @@ export function StockSearch({
                 </div>
 
                 {/* Filtro por fornecedor */}
-                <div className="min-w-[200px]">
+                <div className="flex-1 min-w-0">
                     <Select value={supplierId} onValueChange={onSupplierChange}>
-                        <SelectTrigger>
+                        <SelectTrigger className="text-sm">
                             <SelectValue placeholder="Todos os fornecedores" />
                         </SelectTrigger>
                         <SelectContent>

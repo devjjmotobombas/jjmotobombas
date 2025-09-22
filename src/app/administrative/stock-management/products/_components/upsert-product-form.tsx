@@ -161,21 +161,21 @@ const UpsertProductForm = ({ product, onSuccess }: upsertProductoForm) => {
     };
 
     return (
-        <DialogContent>
-            <DialogTitle>{product ? product.name : "Adicionar produto"}</DialogTitle>
-            <DialogDescription>{product ? "Edite as informações desse produto." : "Adicione um novo produto à sua empresa!"}</DialogDescription>
+        <DialogContent className="max-w-[95vw] sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogTitle className="text-lg sm:text-xl">{product ? product.name : "Adicionar produto"}</DialogTitle>
+            <DialogDescription className="text-sm">{product ? "Edite as informações desse produto." : "Adicione um novo produto à sua empresa!"}</DialogDescription>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 sm:space-y-4">
                     <FormField
                         control={form.control}
                         name="name"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>
+                                <FormLabel className="text-sm">
                                     Nome do produto <span className="text-red-300">*</span>
                                 </FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Digite o nome do produto" {...field} />
+                                    <Input placeholder="Digite o nome do produto" {...field} className="text-sm" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -186,11 +186,11 @@ const UpsertProductForm = ({ product, onSuccess }: upsertProductoForm) => {
                         name="description"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>
+                                <FormLabel className="text-sm">
                                     Descrição
                                 </FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Digite a descrição do produto" {...field} />
+                                    <Input placeholder="Digite a descrição do produto" {...field} className="text-sm" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -201,11 +201,11 @@ const UpsertProductForm = ({ product, onSuccess }: upsertProductoForm) => {
                         name="code"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>
+                                <FormLabel className="text-sm">
                                     Código do produto <span className="text-red-300">*</span>
                                 </FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Digite o código do produto" {...field} />
+                                    <Input placeholder="Digite o código do produto" {...field} className="text-sm" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -216,7 +216,7 @@ const UpsertProductForm = ({ product, onSuccess }: upsertProductoForm) => {
                         name="category"
                         render={({ field }) => (
                             <FormItem className="flex flex-col">
-                                <FormLabel>Categoria <span className="text-red-300">*</span></FormLabel>
+                                <FormLabel className="text-sm">Categoria <span className="text-red-300">*</span></FormLabel>
                                 <Popover open={openCategoryCombobox} onOpenChange={setOpenCategoryCombobox}>
                                     <PopoverTrigger asChild>
                                         <FormControl>
@@ -225,7 +225,7 @@ const UpsertProductForm = ({ product, onSuccess }: upsertProductoForm) => {
                                                 role="combobox"
                                                 aria-expanded={openCategoryCombobox}
                                                 className={cn(
-                                                    "w-full justify-between",
+                                                    "w-full justify-between text-sm",
                                                     !field.value && "text-muted-foreground"
                                                 )}
                                             >
@@ -242,6 +242,7 @@ const UpsertProductForm = ({ product, onSuccess }: upsertProductoForm) => {
                                         <Command shouldFilter={false}>
                                             <CommandInput
                                                 placeholder="Buscar categoria ou criar nova..."
+                                                className="text-sm"
                                                 onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                     const value = (e.target as HTMLInputElement).value;
                                                     field.onChange(value);
@@ -260,6 +261,7 @@ const UpsertProductForm = ({ product, onSuccess }: upsertProductoForm) => {
                                                                 form.setValue("category", category)
                                                                 setOpenCategoryCombobox(false)
                                                             }}
+                                                            className="text-sm"
                                                         >
                                                             <Check
                                                                 className={cn(
@@ -305,7 +307,7 @@ const UpsertProductForm = ({ product, onSuccess }: upsertProductoForm) => {
                         name="supplierId"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>
+                                <FormLabel className="text-sm">
                                     Fornecedor
                                 </FormLabel>
                                 <Popover open={openSupplierCombobox} onOpenChange={setOpenSupplierCombobox}>
@@ -315,7 +317,7 @@ const UpsertProductForm = ({ product, onSuccess }: upsertProductoForm) => {
                                                 variant="outline"
                                                 role="combobox"
                                                 aria-expanded={openSupplierCombobox}
-                                                className="w-full justify-between"
+                                                className="w-full justify-between text-sm"
                                             >
                                                 {field.value
                                                     ? suppliers.find((supplier) => supplier.id === field.value)?.name
@@ -326,9 +328,9 @@ const UpsertProductForm = ({ product, onSuccess }: upsertProductoForm) => {
                                     </PopoverTrigger>
                                     <PopoverContent className="w-full p-0">
                                         <Command>
-                                            <CommandInput placeholder="Buscar fornecedor..." />
+                                            <CommandInput placeholder="Buscar fornecedor..." className="text-sm" />
                                             <CommandList>
-                                                <CommandEmpty>Nenhum fornecedor encontrado.</CommandEmpty>
+                                                <CommandEmpty className="text-sm">Nenhum fornecedor encontrado.</CommandEmpty>
                                                 <CommandGroup>
                                                     <CommandItem
                                                         value=""
@@ -336,6 +338,7 @@ const UpsertProductForm = ({ product, onSuccess }: upsertProductoForm) => {
                                                             field.onChange(undefined);
                                                             setOpenSupplierCombobox(false);
                                                         }}
+                                                        className="text-sm"
                                                     >
                                                         <Check
                                                             className={cn(
@@ -353,6 +356,7 @@ const UpsertProductForm = ({ product, onSuccess }: upsertProductoForm) => {
                                                                 field.onChange(supplier.id);
                                                                 setOpenSupplierCombobox(false);
                                                             }}
+                                                            className="text-sm"
                                                         >
                                                             <Check
                                                                 className={cn(
@@ -377,11 +381,11 @@ const UpsertProductForm = ({ product, onSuccess }: upsertProductoForm) => {
                         name="quantity"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>
+                                <FormLabel className="text-sm">
                                     Quantidade <span className="text-red-300">*</span>
                                 </FormLabel>
                                 <FormControl>
-                                    <Input type="number" placeholder="Digite inicial de estoque" {...field} />
+                                    <Input type="number" placeholder="Digite inicial de estoque" {...field} className="text-sm" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -392,7 +396,7 @@ const UpsertProductForm = ({ product, onSuccess }: upsertProductoForm) => {
                         name="purchasePriceInCents"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>
+                                <FormLabel className="text-sm">
                                     Preço de compra <span className="text-red-300">*</span>
                                 </FormLabel>
                                 <NumericFormat
@@ -408,6 +412,7 @@ const UpsertProductForm = ({ product, onSuccess }: upsertProductoForm) => {
                                     thousandSeparator="."
                                     customInput={Input}
                                     prefix="R$"
+                                    className="text-sm"
                                 />
                                 <FormMessage />
                             </FormItem>
@@ -418,7 +423,7 @@ const UpsertProductForm = ({ product, onSuccess }: upsertProductoForm) => {
                         name="salePriceInCents"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>
+                                <FormLabel className="text-sm">
                                     Preço de venda <span className="text-red-300">*</span>
                                 </FormLabel>
                                 <NumericFormat
@@ -434,6 +439,7 @@ const UpsertProductForm = ({ product, onSuccess }: upsertProductoForm) => {
                                     thousandSeparator="."
                                     customInput={Input}
                                     prefix="R$"
+                                    className="text-sm"
                                 />
                                 <FormMessage />
                             </FormItem>
@@ -451,18 +457,18 @@ const UpsertProductForm = ({ product, onSuccess }: upsertProductoForm) => {
                                     />
                                 </FormControl>
                                 <div className="space-y-1 leading-none">
-                                    <FormLabel>
+                                    <FormLabel className="text-sm">
                                         Publicar para venda
                                     </FormLabel>
-                                    <p className="text-sm text-muted-foreground">
+                                    <p className="text-xs text-muted-foreground">
                                         Este produto aparecerá no catálogo de vendas
                                     </p>
                                 </div>
                             </FormItem>
                         )}
                     />
-                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                        <div className="bg-muted relative mx-auto h-24 w-24 overflow-hidden rounded-lg sm:mx-0">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                        <div className="bg-muted relative mx-auto h-20 w-20 overflow-hidden rounded-lg sm:mx-0 sm:h-24 sm:w-24">
                             {imagePreview ? (
                                 <Image
                                     src={imagePreview}
@@ -479,22 +485,23 @@ const UpsertProductForm = ({ product, onSuccess }: upsertProductoForm) => {
                                 />
                             ) : (
                                 <div className="flex h-full w-full items-center justify-center">
-                                    <Upload className="text-muted-foreground h-8 w-8" />
+                                    <Upload className="text-muted-foreground h-6 w-6 sm:h-8 sm:w-8" />
                                 </div>
                             )}
                         </div>
                         <div className="flex flex-col gap-2">
-                            <FormLabel>Imagem do produto</FormLabel>
+                            <FormLabel className="text-sm">Imagem do produto</FormLabel>
                             <Input
                                 type="file"
                                 accept="image/*"
                                 onChange={handleImageChange}
                                 disabled={isUploadingImage}
+                                className="text-sm"
                             />
                             {isUploadingImage && (
                                 <div className="flex items-center gap-2">
                                     <Loader2 className="h-4 w-4 animate-spin" />
-                                    <span className="text-muted-foreground text-sm">
+                                    <span className="text-muted-foreground text-xs">
                                         Enviando imagem...
                                     </span>
                                 </div>
@@ -502,7 +509,7 @@ const UpsertProductForm = ({ product, onSuccess }: upsertProductoForm) => {
                         </div>
                     </div>
                     <DialogFooter>
-                        <Button type="submit" disabled={upsertProductoAction.isPending || isUploadingImage}>
+                        <Button type="submit" disabled={upsertProductoAction.isPending || isUploadingImage} className="text-sm">
                             {upsertProductoAction.isPending || isUploadingImage ? (
                                 <Loader2 className="h-4 w-4 animate-spin" />
                             ) : (

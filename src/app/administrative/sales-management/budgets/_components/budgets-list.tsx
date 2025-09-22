@@ -64,28 +64,31 @@ const BudgetsList = ({ budgets, clients, products }: BudgetsListProps) => {
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
                 <div className="flex-1">
                     <Input
                         placeholder="Buscar orçamentos..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
+                        className="text-sm"
                     />
                 </div>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="w-full sm:w-48">
-                        <SelectValue placeholder="Filtrar por status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="all">Todos os status</SelectItem>
-                        <SelectItem value="offered">Ofertado</SelectItem>
-                        <SelectItem value="sold">Vendido</SelectItem>
-                        <SelectItem value="canceled">Cancelado</SelectItem>
-                    </SelectContent>
-                </Select>
-                <Button onClick={() => setShowCreateForm(true)}>
-                    Criar orçamento
-                </Button>
+                <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
+                    <Select value={statusFilter} onValueChange={setStatusFilter}>
+                        <SelectTrigger className="w-full sm:w-40">
+                            <SelectValue placeholder="Filtrar por status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">Todos os status</SelectItem>
+                            <SelectItem value="offered">Ofertado</SelectItem>
+                            <SelectItem value="sold">Vendido</SelectItem>
+                            <SelectItem value="canceled">Cancelado</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <Button onClick={() => setShowCreateForm(true)} className="text-sm">
+                        Criar orçamento
+                    </Button>
+                </div>
             </div>
 
             {filteredBudgets.length === 0 ? (
@@ -97,7 +100,7 @@ const BudgetsList = ({ budgets, clients, products }: BudgetsListProps) => {
                     </p>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {filteredBudgets.map((budget) => (
                         <BudgetCard
                             key={budget.id}

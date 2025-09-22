@@ -65,17 +65,17 @@ const UpsertMovementStockForm = ({ products, onSuccess }: UpsertMovementStockFor
     };
 
     return (
-        <DialogContent>
-            <DialogTitle>Adicionar movimento de estoque</DialogTitle>
-            <DialogDescription>Registre uma entrada ou saída de produtos no estoque.</DialogDescription>
+        <DialogContent className="max-w-[95vw] sm:max-w-md">
+            <DialogTitle className="text-lg sm:text-xl">Adicionar movimento de estoque</DialogTitle>
+            <DialogDescription className="text-sm">Registre uma entrada ou saída de produtos no estoque.</DialogDescription>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 sm:space-y-4">
                     <FormField
                         control={form.control}
                         name="productId"
                         render={({ field }) => (
                             <FormItem className="flex flex-col">
-                                <FormLabel>Produto</FormLabel>
+                                <FormLabel className="text-sm">Produto</FormLabel>
                                 <Popover open={openProductCombobox} onOpenChange={setOpenProductCombobox}>
                                     <PopoverTrigger asChild>
                                         <FormControl>
@@ -84,7 +84,7 @@ const UpsertMovementStockForm = ({ products, onSuccess }: UpsertMovementStockFor
                                                 role="combobox"
                                                 aria-expanded={openProductCombobox}
                                                 className={cn(
-                                                    "w-full justify-between",
+                                                    "w-full justify-between text-sm",
                                                     !field.value && "text-muted-foreground"
                                                 )}
                                             >
@@ -99,9 +99,9 @@ const UpsertMovementStockForm = ({ products, onSuccess }: UpsertMovementStockFor
                                     </PopoverTrigger>
                                     <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
                                         <Command>
-                                            <CommandInput placeholder="Buscar produto..." />
+                                            <CommandInput placeholder="Buscar produto..." className="text-sm" />
                                             <CommandList>
-                                                <CommandEmpty>Nenhum produto encontrado.</CommandEmpty>
+                                                <CommandEmpty className="text-sm">Nenhum produto encontrado.</CommandEmpty>
                                                 <CommandGroup>
                                                     {products.map((product) => (
                                                         <CommandItem
@@ -111,6 +111,7 @@ const UpsertMovementStockForm = ({ products, onSuccess }: UpsertMovementStockFor
                                                                 form.setValue("productId", product.id)
                                                                 setOpenProductCombobox(false)
                                                             }}
+                                                            className="text-sm"
                                                         >
                                                             <Check
                                                                 className={cn(
@@ -138,19 +139,19 @@ const UpsertMovementStockForm = ({ products, onSuccess }: UpsertMovementStockFor
                         name="movementType"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Tipo de movimento</FormLabel>
+                                <FormLabel className="text-sm">Tipo de movimento</FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                     <FormControl>
-                                        <SelectTrigger>
+                                        <SelectTrigger className="text-sm">
                                             <SelectValue placeholder="Selecione o tipo de movimento" />
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        <SelectItem value="entry">Entrada</SelectItem>
-                                        <SelectItem value="exit">Saída</SelectItem>
+                                        <SelectItem value="entry" className="text-sm">Entrada</SelectItem>
+                                        <SelectItem value="exit" className="text-sm">Saída</SelectItem>
                                     </SelectContent>
                                 </Select>
-                                <FormDescription>
+                                <FormDescription className="text-xs">
                                     Entrada: adiciona produtos ao estoque | Saída: remove produtos do estoque
                                 </FormDescription>
                                 <FormMessage />
@@ -163,12 +164,13 @@ const UpsertMovementStockForm = ({ products, onSuccess }: UpsertMovementStockFor
                         name="quantity"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Quantidade</FormLabel>
+                                <FormLabel className="text-sm">Quantidade</FormLabel>
                                 <FormControl>
                                     <Input
                                         type="number"
                                         placeholder="Digite a quantidade"
                                         {...field}
+                                        className="text-sm"
                                     />
                                 </FormControl>
                                 <FormMessage />
@@ -181,14 +183,15 @@ const UpsertMovementStockForm = ({ products, onSuccess }: UpsertMovementStockFor
                         name="reason"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Motivo (opcional)</FormLabel>
+                                <FormLabel className="text-sm">Motivo (opcional)</FormLabel>
                                 <FormControl>
                                     <Input
                                         placeholder="Ex: Compra, Venda, Ajuste de estoque, etc."
                                         {...field}
+                                        className="text-sm"
                                     />
                                 </FormControl>
-                                <FormDescription>
+                                <FormDescription className="text-xs">
                                     Descreva o motivo do movimento para fins de controle
                                 </FormDescription>
                                 <FormMessage />
@@ -197,7 +200,7 @@ const UpsertMovementStockForm = ({ products, onSuccess }: UpsertMovementStockFor
                     />
 
                     <DialogFooter>
-                        <Button type="submit" disabled={upsertStockMovementAction.isPending}>
+                        <Button type="submit" disabled={upsertStockMovementAction.isPending} className="text-sm">
                             {upsertStockMovementAction.isPending ? (
                                 <Loader2 className="h-4 w-4 animate-spin" />
                             ) : (

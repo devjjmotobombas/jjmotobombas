@@ -111,9 +111,13 @@ export default function StockPageClient({ initialData }: StockPageClientProps) {
                     </PageDescription>
                 </PageHeaderContent>
                 <PageActions>
-                    <ViewToggle view={view} onViewChange={setView} />
-                    <AddMovementStockButton products={data.products} />
-                    <AddProductButton />
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+                        <ViewToggle view={view} onViewChange={setView} />
+                        <div className="flex flex-col gap-2 sm:flex-row sm:gap-2">
+                            <AddMovementStockButton products={data.products} />
+                            <AddProductButton />
+                        </div>
+                    </div>
                 </PageActions>
             </PageHeader>
 

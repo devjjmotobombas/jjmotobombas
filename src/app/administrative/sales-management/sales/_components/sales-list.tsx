@@ -98,24 +98,25 @@ const SalesList = ({ sales, clients, products }: SalesListProps) => {
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
                 <div className="flex-1">
                     <Input
                         placeholder="Buscar por cliente, código da venda ou telefone..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full"
+                        className="w-full text-sm"
                     />
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-col gap-2 sm:flex-row sm:gap-2">
                     <Button
                         variant="outline"
                         onClick={handleResetFilters}
                         disabled={!searchTerm}
+                        className="text-sm"
                     >
                         Limpar filtros
                     </Button>
-                    <Button onClick={handleAdd}>
+                    <Button onClick={handleAdd} className="text-sm">
                         Nova venda
                     </Button>
                 </div>
@@ -133,7 +134,7 @@ const SalesList = ({ sales, clients, products }: SalesListProps) => {
                     )}
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {filteredSales.map((sale) => (
                         <SaleCard
                             key={sale.id}
