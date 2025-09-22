@@ -86,7 +86,7 @@ export function StoreContent({ enterprise, initialProducts }: StoreContentProps)
             />
 
             {/* Seção de Produtos */}
-            <div id="products-section" className="w-full px-4 sm:px-6 lg:px-8 py-8">
+            <div id="products-section" className="w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
                 {/* Botão WhatsApp fixo */}
                 <div className="fixed bottom-4 right-4 z-50">
                     <WhatsAppButton
@@ -95,11 +95,11 @@ export function StoreContent({ enterprise, initialProducts }: StoreContentProps)
                     />
                 </div>
 
-                <div className="text-center mb-12">
-                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+                <div className="text-center mb-8 sm:mb-12">
+                    <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 sm:mb-6">
                         Catálogo de produtos
                     </h1>
-                    <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
+                    <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto px-4">
                         Veja nossos produtos e aproveite as melhores ofertas.
                     </p>
                 </div>
@@ -107,8 +107,8 @@ export function StoreContent({ enterprise, initialProducts }: StoreContentProps)
                 {/* Grid de produtos */}
                 <div className="w-full">
                     {isLoading ? (
-                        <div className="text-center py-12">
-                            <div className="text-gray-500 text-lg">Buscando produtos...</div>
+                        <div className="text-center py-8 sm:py-12">
+                            <div className="text-gray-500 text-base sm:text-lg">Buscando produtos...</div>
                         </div>
                     ) : (
                         <ProductsGrid
