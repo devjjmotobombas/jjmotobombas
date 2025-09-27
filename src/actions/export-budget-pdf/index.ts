@@ -1,9 +1,7 @@
 "use server";
 
 import { eq } from "drizzle-orm";
-import fs from "fs";
 import jsPDF from "jspdf";
-import path from "path";
 
 import { db } from "@/db";
 import { budgetsTable, clientsTable, enterprisesTable } from "@/db/schema";
@@ -66,9 +64,15 @@ export const exportBudgetPDF = actionClient
 
         // Carregar e adicionar logo da empresa
         try {
-            const logoPath = path.join(process.cwd(), "public", "LogoJJWB.png");
-            const logoBuffer = fs.readFileSync(logoPath);
-            const logoBase64 = logoBuffer.toString("base64");
+            const logoUrl = "https://wwzja24bxj5qlhdj.public.blob.vercel-storage.com/LogoJJWB.png";
+            const logoResponse = await fetch(logoUrl);
+
+            if (!logoResponse.ok) {
+                throw new Error(`Erro ao buscar logo: ${logoResponse.status}`);
+            }
+
+            const logoBuffer = await logoResponse.arrayBuffer();
+            const logoBase64 = Buffer.from(logoBuffer).toString("base64");
             const logoDataUrl = `data:image/png;base64,${logoBase64}`;
 
             // Adicionar logo (ajustar tamanho conforme necessário)
