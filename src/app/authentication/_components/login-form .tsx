@@ -138,12 +138,13 @@ const LoginForm = () => {
                   "Entrar"
                 )}
               </Button>
-              <Button
-                className="w-full text-primary bg-white border-1 border-gray-200 hover:bg-primary hover:text-white"
-                onClick={() => router.push("/authentication/sign-up")}
+              <p className="text-sm text-gray-500 mt-2"> Ainda não possui uma conta? <Link
+                href="/authentication/sign-up"
+                className="text-sm text-gray-500 hover:text-primary"
               >
                 Cadastre-se
-              </Button>
+              </Link>
+              </p>
             </div>
           </CardFooter>
         </form >
