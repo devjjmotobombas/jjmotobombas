@@ -79,9 +79,9 @@ export const auth = betterAuth({
     enabled: true,
     sendResetPassword: async ({ user, url }) => {
       resend.emails.send({
-        from: `${process.env.NAME_FOR_ACCOUNT_MANAGEMENT_SUBMISSIONE} <${process.env.EMAIL_FOR_ACCOUNT_MANAGEMENT_SUBMISSION}>`,
+        from: `${process.env.NAME_FOR_ACCOUNT_MANAGEMENT_SUBMISSION} <${process.env.EMAIL_FOR_ACCOUNT_MANAGEMENT_SUBMISSION}>`,
         to: user.email,
-        subject: "Redefina sua senha - iGenda App",
+        subject: "Redefina sua senha - JJ Motobombas App",
         react: ForgotPasswordEmail({
           username: user.name,
           resetUrl: url,

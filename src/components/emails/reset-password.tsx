@@ -44,7 +44,7 @@ const ForgotPasswordEmail = (props: ForgotPasswordEmailProps) => {
                 fontSize: "32px",
                 fontWeight: "bold"
               }}>
-                iGenda
+                JJ Motobombas
               </Heading>
               <Text style={{
                 margin: "10px 0 0 0",
@@ -52,7 +52,7 @@ const ForgotPasswordEmail = (props: ForgotPasswordEmailProps) => {
                 fontSize: "16px",
                 opacity: 0.9
               }}>
-                Sua agenda inteligente
+                Sua conta JJ Motobombas
               </Text>
             </Section>
 
@@ -80,21 +80,14 @@ const ForgotPasswordEmail = (props: ForgotPasswordEmailProps) => {
                 borderLeft: "4px solid #22c55e",
                 marginBottom: "30px"
               }}>
-                <Text style={{
-                  margin: "0 0 20px 0",
-                  color: "#374151",
-                  fontSize: "16px",
-                  lineHeight: 1.6
-                }}>
-                  Agradecemos por escolher a iGenda para organizar seu dia a dia! 💚
-                </Text>
+
                 <Text style={{
                   margin: 0,
                   color: "#374151",
                   fontSize: "16px",
                   lineHeight: 1.6
                 }}>
-                  Recebemos seu pedido para redefinir a senha da sua conta iGenda referente ao email {userEmail}, clique no botão abaixo e você será direcionado para a redefinição:
+                  Recebemos seu pedido para redefinir a senha da sua conta JJ Motobombas referente ao email {userEmail}, clique no botão abaixo e você será direcionado para a redefinição:
                 </Text>
               </div>
 
@@ -113,7 +106,7 @@ const ForgotPasswordEmail = (props: ForgotPasswordEmailProps) => {
                     display: "inline-block"
                   }}
                 >
-                  ✨ Redefinir Senha
+                  Redefinir Senha
                 </Button>
               </div>
 
@@ -160,12 +153,12 @@ const ForgotPasswordEmail = (props: ForgotPasswordEmailProps) => {
                 Precisa de ajuda? Entre em contato conosco:
               </Text>
               <Text style={{ margin: "0 0 20px 0" }}>
-                <a href="https://wa.me/64992834346" style={{
+                <a href="https://wa.me/64992214800" style={{
                   color: "#22c55e",
                   textDecoration: "none",
                   fontWeight: "bold"
                 }}>
-                  Suporte iGenda
+                  Suporte JJ Motobombas
                 </a>
               </Text>
               {/* 
@@ -203,8 +196,8 @@ const ForgotPasswordEmail = (props: ForgotPasswordEmailProps) => {
                 fontSize: "12px",
                 lineHeight: 1.4
               }}>
-                © 2025 iGenda. Todos os direitos reservados.<br />
-                Este email foi enviado para você porque você possui uma assinatura na nossa plataforma.
+                © 2025 JJ Motobombas. Todos os direitos reservados.<br />
+                Este email foi enviado para você porque você possui uma conta na nossa plataforma.
               </Text>
             </Section>
           </Container>

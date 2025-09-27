@@ -2,8 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
@@ -35,8 +35,10 @@ const formSchema = z.object({
 
 export function ResetPasswordForm({ }: React.ComponentProps<"div">) {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isValidToken, setIsValidToken] = useState<boolean | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -45,6 +47,18 @@ export function ResetPasswordForm({ }: React.ComponentProps<"div">) {
       confirmPassword: "",
     },
   });
+
+  useEffect(() => {
+    // Verificar se há token na URL
+    const token = searchParams.get("token");
+    if (!token) {
+      toast.error("Token de redefinição de senha inválido ou expirado");
+      setIsValidToken(false);
+      router.push("/authentication/forgot-password");
+      return;
+    }
+    setIsValidToken(true);
+  }, [searchParams, router]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
@@ -55,8 +69,16 @@ export function ResetPasswordForm({ }: React.ComponentProps<"div">) {
       return;
     }
 
+    const token = searchParams.get("token");
+    if (!token) {
+      toast.error("Token de redefinição de senha inválido ou expirado");
+      setIsLoading(false);
+      return;
+    }
+
     const { error } = await authClient.resetPassword({
       newPassword: values.password,
+      token: token,
     });
 
     if (error) {
@@ -67,6 +89,37 @@ export function ResetPasswordForm({ }: React.ComponentProps<"div">) {
     }
 
     setIsLoading(false);
+  }
+
+  if (isValidToken === null) {
+    return (
+      <Card className="bg-[#fcfcfc] border-1 border-gray-200 shadow-md">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-center">
+            <Loader2 className="h-6 w-6 animate-spin" />
+            <span className="ml-2">Verificando token...</span>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (isValidToken === false) {
+    return (
+      <Card className="bg-[#fcfcfc] border-1 border-gray-200 shadow-md">
+        <CardContent className="p-6">
+          <div className="text-center">
+            <p className="text-red-500 mb-4">Token inválido ou expirado</p>
+            <Button
+              onClick={() => router.push("/authentication/forgot-password")}
+              variant="outline"
+            >
+              Solicitar novo link
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (

@@ -42,15 +42,26 @@ export function ForgotPasswordForm({ }: React.ComponentProps<"div">) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const { error } = await authClient.forgetPassword({
+        email: values.email,
+        redirectTo: "/authentication/reset-password",
+      });
 
-    await authClient.forgetPassword({
-      email: values.email,
-      redirectTo: "/authentication/reset-password",
-    });
+      if (error) {
+        if (error.message?.includes("User not found") || error.message?.includes("not found")) {
+          toast.error("E-mail não cadastrado no sistema.");
+        } else {
+          toast.error(error.message || "Erro ao processar solicitação. Tente novamente.");
+        }
+        return;
+      }
 
-    toast.success("Enviamos um link de redefinição de senha para o seu e-mail.");
-    router.push("/authentication");
-
+      toast.success("Enviamos um link de redefinição de senha para o seu e-mail.");
+      router.push("/authentication");
+    } catch {
+      toast.error("Erro ao processar solicitação. Tente novamente.");
+    }
   }
 
   return (
