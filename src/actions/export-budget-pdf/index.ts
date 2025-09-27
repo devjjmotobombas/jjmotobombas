@@ -1,7 +1,9 @@
 "use server";
 
 import { eq } from "drizzle-orm";
+import fs from "fs";
 import jsPDF from "jspdf";
+import path from "path";
 
 import { db } from "@/db";
 import { budgetsTable, clientsTable, enterprisesTable } from "@/db/schema";
@@ -58,11 +60,39 @@ export const exportBudgetPDF = actionClient
         const pageHeight = doc.internal.pageSize.getHeight();
         let yPosition = 20;
 
-        // Configurações de fonte
+        // Aplicar cor de fundo #fafafa
+        doc.setFillColor(250, 250, 250); // #fafafa em RGB
+        doc.rect(0, 0, pageWidth, pageHeight, "F");
+
+        // Carregar e adicionar logo da empresa
+        try {
+            const logoPath = path.join(process.cwd(), "public", "LogoJJWB.png");
+            const logoBuffer = fs.readFileSync(logoPath);
+            const logoBase64 = logoBuffer.toString("base64");
+            const logoDataUrl = `data:image/png;base64,${logoBase64}`;
+
+            // Adicionar logo (ajustar tamanho conforme necessário)
+            const logoWidth = 40;
+            const logoHeight = 40;
+            const logoX = (pageWidth - logoWidth) / 2;
+            const logoY = yPosition - 5;
+
+            doc.addImage(logoDataUrl, "PNG", logoX, logoY, logoWidth, logoHeight);
+            yPosition += logoHeight + 5;
+        } catch (error) {
+            console.error("Erro ao carregar logo:", error);
+            // Se não conseguir carregar a logo, usar texto como fallback
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(20);
+            doc.text("JJ Motobombas", pageWidth / 2, yPosition);
+            yPosition += 10;
+        }
+
+        // Configurações de fonte para o nome da empresa
         doc.setFont("helvetica", "bold");
         doc.setFontSize(20);
 
-        // Cabeçalho - Nome da empresa
+        // Nome da empresa abaixo da logo
         doc.text("JJ Motobombas", pageWidth / 2, yPosition, { align: "center" });
         yPosition += 10;
 
