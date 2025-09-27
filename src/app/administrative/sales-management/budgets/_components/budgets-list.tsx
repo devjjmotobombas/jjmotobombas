@@ -36,11 +36,13 @@ const BudgetsList = ({ budgets, clients, products }: BudgetsListProps) => {
     }) | null>(null);
     const [showCreateForm, setShowCreateForm] = useState(false);
 
-    const filteredBudgets = budgets.filter((budget) => {
-        const matchesSearch = budget.id.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesStatus = statusFilter === "all" || budget.status === statusFilter;
-        return matchesSearch && matchesStatus;
-    });
+    const filteredBudgets = budgets
+        .filter((budget) => {
+            const matchesSearch = budget.id.toLowerCase().includes(searchTerm.toLowerCase());
+            const matchesStatus = statusFilter === "all" || budget.status === statusFilter;
+            return matchesSearch && matchesStatus;
+        })
+        .sort((a, b) => a.client.name.localeCompare(b.client.name));
 
     const handleEdit = (budget: typeof budgetsTable.$inferSelect & {
         client: {

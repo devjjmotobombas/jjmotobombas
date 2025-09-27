@@ -47,14 +47,16 @@ const SalesList = ({ sales, clients, products }: SalesListProps) => {
         };
     } | null>(null);
 
-    const filteredSales = sales.filter(sale => {
-        const searchLower = searchTerm.toLowerCase();
-        return (
-            sale.client.name.toLowerCase().includes(searchLower) ||
-            sale.id.toLowerCase().includes(searchLower) ||
-            sale.client.phoneNumber.includes(searchTerm)
-        );
-    });
+    const filteredSales = sales
+        .filter(sale => {
+            const searchLower = searchTerm.toLowerCase();
+            return (
+                sale.client.name.toLowerCase().includes(searchLower) ||
+                sale.id.toLowerCase().includes(searchLower) ||
+                sale.client.phoneNumber.includes(searchTerm)
+            );
+        })
+        .sort((a, b) => a.client.name.localeCompare(b.client.name));
 
     const handleResetFilters = () => {
         setSearchTerm("");

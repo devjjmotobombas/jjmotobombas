@@ -40,6 +40,10 @@ const EnterpriseSuppliersPage = async () => {
     where: eq(suppliersTable.enterpriseId, session.user.enterprise.id),
   });
 
+  // Ordenar fornecedores por nome em ordem alfabética decrescente
+  // Para ordenar em ordem alfabética crescente, basta inverter a ordem dos parâmetros na função de comparação:
+  const sortedSuppliers = suppliers.sort((a, b) => a.name.localeCompare(b.name));
+
   return (
     <PageContainer>
       <PageHeader>
@@ -55,7 +59,7 @@ const EnterpriseSuppliersPage = async () => {
       </PageHeader>
       <PageContent>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-          {suppliers.map((supplier) => (
+          {sortedSuppliers.map((supplier) => (
             <SupplierCard
               key={supplier.id}
               supplier={supplier}

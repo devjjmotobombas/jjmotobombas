@@ -56,7 +56,8 @@ export default function StockPageClient({ initialData }: StockPageClientProps) {
             filtered = filtered.filter((product) => product.supplierId === supplierId);
         }
 
-        return filtered;
+        // Ordenar por nome em ordem alfabética decrescente
+        return filtered.sort((a, b) => a.name.localeCompare(b.name));
     }, [data.products, search, category, supplierId]);
 
     // Calcular estatísticas dos produtos filtrados

@@ -69,17 +69,19 @@ export function ClientsTable({ clients }: ClientsTableProps) {
   const [filters, setFilters] = useState({ name: "", phone: "" });
 
   const filteredClients = useMemo(() => {
-    return clients.filter((client) => {
-      const nameMatch =
-        !filters.name ||
-        client.name.toLowerCase().includes(filters.name.toLowerCase());
+    return clients
+      .filter((client) => {
+        const nameMatch =
+          !filters.name ||
+          client.name.toLowerCase().includes(filters.name.toLowerCase());
 
-      const phoneMatch =
-        !filters.phone ||
-        client.phoneNumber?.includes(filters.phone.replace(/\D/g, ""));
+        const phoneMatch =
+          !filters.phone ||
+          client.phoneNumber?.includes(filters.phone.replace(/\D/g, ""));
 
-      return nameMatch && phoneMatch;
-    });
+        return nameMatch && phoneMatch;
+      })
+      .sort((a, b) => a.name.localeCompare(b.name));
   }, [clients, filters]);
 
   const table = useReactTable({
