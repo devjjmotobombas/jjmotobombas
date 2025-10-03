@@ -23,7 +23,7 @@ export const upsertSale = actionClient
             throw new Error("Enterprise not found");
         }
 
-        const { id, clientId, items, total, paymentMethod, status } = parsedInput;
+        const { id, clientId, items, total, paymentMethod, status, budgetId } = parsedInput;
 
         // Se `id` estiver presente, atualiza a venda existente
         let saleId = id;
@@ -37,6 +37,7 @@ export const upsertSale = actionClient
                     total,
                     paymentMethod,
                     status,
+                    budgetId,
                     updatedAt: new Date(),
                 })
                 .where(eq(salesTable.id, saleId));
@@ -55,6 +56,7 @@ export const upsertSale = actionClient
                     total,
                     paymentMethod,
                     status,
+                    budgetId,
                 })
                 .returning({ id: salesTable.id });
 

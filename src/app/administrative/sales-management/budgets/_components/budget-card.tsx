@@ -117,7 +117,8 @@ const BudgetCard = ({ budget, onEdit, onDelete }: BudgetCardProps) => {
                 items: saleItems,
                 total: budget.totalInCents,
                 paymentMethod: paymentMethod,
-                status: "completed", // Venda criada a partir de orçamento já é considerada concluída
+                status: "completed",
+                budgetId: budget.id
             });
 
             // Atualizar status do orçamento para "sold"

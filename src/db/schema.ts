@@ -255,6 +255,8 @@ export const salesTable = pgTable("sales", {
   paymentMethod: text("payment_method").notNull(),
   status: text("status").notNull().default("pending"),
   createdAT: timestamp("created_at").defaultNow().notNull(),
+  budgetId: uuid("buget_id")
+    .references(() => budgetsTable.id, { onDelete: "cascade" }),
   clientId: uuid("client_id")
     .notNull()
     .references(() => clientsTable.id, { onDelete: "cascade" }),
