@@ -28,7 +28,14 @@ export const metadata: Metadata = {
     title: 'JJMotobombas - Dashboard de Estoque',
 }
 
-export default async function StockDashboardPage({ searchParams }: { searchParams?: { startDate?: string; endDate?: string } } = {}) {
+interface PageProps {
+    searchParams?: {
+        startDate?: string;
+        endDate?: string;
+    };
+}
+
+export default async function StockDashboardPage({ searchParams }: PageProps) {
     const session = await auth.api.getSession({ headers: await headers() })
     if (!session?.user) redirect('/authentication')
     if (!session.user.enterprise) redirect('/enterprise-form')
