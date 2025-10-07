@@ -3,6 +3,8 @@ import React from 'react'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
+import { HelpTooltip } from './help-tooltip'
+
 type PaymentMethod = { method: string; count: number; totalInCents: number }
 
 function formatCurrency(cents: number) {
@@ -74,7 +76,10 @@ export function PaymentMethodsCard({ methods }: { methods: PaymentMethod[] }) {
     return (
         <Card className="h-full">
             <CardHeader className="pb-3">
-                <CardTitle className="text-lg font-semibold">Formas de Pagamento</CardTitle>
+                <CardTitle className="text-lg font-semibold flex items-center gap-2">
+                    Formas de Pagamento
+                    <HelpTooltip content="Mostra a distribuição das vendas por forma de pagamento utilizada pelos clientes. O gráfico de pizza representa a proporção de cada método, enquanto a lista mostra valores absolutos e número de transações. Esta análise ajuda a entender as preferências dos clientes e planejar estratégias de pagamento." />
+                </CardTitle>
             </CardHeader>
             <CardContent className="pt-0">
                 <PieChartClient data={methods} />

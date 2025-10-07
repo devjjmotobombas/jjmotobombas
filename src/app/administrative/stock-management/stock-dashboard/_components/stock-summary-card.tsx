@@ -1,4 +1,4 @@
-import { DollarSign, ShoppingCart, TrendingDown, TrendingUp, Users } from 'lucide-react'
+import { AlertTriangle, Package, TrendingDown, TrendingUp, Warehouse } from 'lucide-react'
 import React from 'react'
 
 import { Card } from '@/components/ui/card'
@@ -14,7 +14,7 @@ interface Props {
     helpText?: string
 }
 
-export function SummaryCard({ title, value, subtitle, icon, trend, helpText }: Props) {
+export function StockSummaryCard({ title, value, subtitle, icon, trend, helpText }: Props) {
     const getTrendIcon = () => {
         if (trend === 'up') return <TrendingUp className="h-3 w-3 text-green-500" />
         if (trend === 'down') return <TrendingDown className="h-3 w-3 text-red-500" />
@@ -55,9 +55,9 @@ export function SummaryCard({ title, value, subtitle, icon, trend, helpText }: P
     )
 }
 
-export const SummaryCardIcons = {
-    revenue: <DollarSign className="h-5 w-5" />,
-    sales: <ShoppingCart className="h-5 w-5" />,
-    clients: <Users className="h-5 w-5" />,
-    growth: <TrendingUp className="h-5 w-5" />,
+export const StockSummaryCardIcons = {
+    totalProducts: <Package className="h-5 w-5" />,
+    stockValue: <Warehouse className="h-5 w-5" />,
+    lowStock: <AlertTriangle className="h-5 w-5" />,
+    turnover: <TrendingUp className="h-5 w-5" />,
 }

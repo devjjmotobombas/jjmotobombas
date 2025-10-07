@@ -4,6 +4,8 @@ import React from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
+import { HelpTooltip } from './help-tooltip'
+
 interface ConversionCardProps {
     budgetsCount: number
     convertedToSales: number
@@ -29,6 +31,7 @@ export function ConversionCard({ budgetsCount, convertedToSales, conversionRate 
                 <CardTitle className="text-lg font-semibold flex items-center gap-2">
                     <Target className="h-5 w-5" />
                     Conversão Orçamento → Venda
+                    <HelpTooltip content="Mostra a taxa de conversão de orçamentos em vendas efetivas. Calcula quantos orçamentos gerados foram convertidos em vendas reais. Uma taxa alta indica boa eficiência comercial, enquanto baixa pode indicar necessidade de melhorar o processo de follow-up ou ajustar preços. Taxa ideal: 40% ou mais." />
                 </CardTitle>
             </CardHeader>
             <CardContent className="pt-0">

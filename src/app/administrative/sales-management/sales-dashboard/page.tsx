@@ -116,21 +116,25 @@ export default async function SalesDashboardPage({ searchParams }: { searchParam
                             icon={SummaryCardIcons.revenue}
                             subtitle={data.periodComparison ? `${data.periodComparison.revenueGrowthRate > 0 ? '+' : ''}${data.periodComparison.revenueGrowthRate.toFixed(1)}% vs período anterior` : undefined}
                             trend={data.periodComparison ? (data.periodComparison.revenueGrowthRate > 0 ? 'up' : data.periodComparison.revenueGrowthRate < 0 ? 'down' : 'neutral') : undefined}
+                            helpText="Mostra o faturamento total das vendas no período selecionado. É calculado somando o valor de todas as vendas realizadas. O crescimento em relação ao período anterior indica se o negócio está expandindo. Valores são baseados no preço de venda dos produtos."
                         />
                         <SummaryCard
                             title="Total de Vendas"
                             value={data.totalSalesCount.toLocaleString('pt-BR')}
                             icon={SummaryCardIcons.sales}
+                            helpText="Conta o número total de transações de venda realizadas no período. Cada venda é contada como uma transação única, independente da quantidade de produtos vendidos. Esta métrica ajuda a entender a frequência de vendas e o volume de transações."
                         />
                         <SummaryCard
                             title="Ticket Médio"
                             value={(data.averageTicketInCents / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                             icon={SummaryCardIcons.growth}
+                            helpText="Calcula o valor médio por venda, dividindo o faturamento total pelo número de vendas. Um ticket médio alto indica que os clientes estão comprando produtos de maior valor ou em maior quantidade. Esta métrica é importante para estratégias de upselling."
                         />
                         <SummaryCard
                             title="Margem Estimada"
                             value={(data.estimatedGrossMarginInCents / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                             icon={SummaryCardIcons.revenue}
+                            helpText="Calcula a margem bruta estimada subtraindo o custo de aquisição do preço de venda, multiplicado pela quantidade vendida. Esta métrica indica a lucratividade das vendas e ajuda a avaliar a saúde financeira do negócio."
                         />
                     </div>
 
@@ -158,6 +162,7 @@ export default async function SalesDashboardPage({ searchParams }: { searchParam
                                 value: p.qty,
                                 subtitle: `${(p.totalValueInCents / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`
                             }))}
+                            helpText="Lista os produtos que tiveram maior quantidade vendida no período selecionado. Ordenados pela quantidade total de unidades vendidas. Esta métrica ajuda a identificar os produtos mais populares e com maior demanda, sendo úteis para planejamento de estoque e estratégias de marketing."
                         />
                         <TopList
                             title="Produtos mais vendidos por valor"
@@ -167,6 +172,7 @@ export default async function SalesDashboardPage({ searchParams }: { searchParam
                                 value: (p.totalValueInCents / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
                                 subtitle: `${p.qty} unidades`
                             }))}
+                            helpText="Lista os produtos que geraram maior faturamento no período selecionado. Ordenados pelo valor total em reais vendido. Esta métrica ajuda a identificar os produtos mais lucrativos e com maior impacto no faturamento, sendo importantes para estratégias de precificação e mix de produtos."
                         />
                     </div>
 
@@ -187,6 +193,7 @@ export default async function SalesDashboardPage({ searchParams }: { searchParam
                                     value: (c.totalSpentInCents / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
                                     subtitle: `${c.orders} pedidos`
                                 }))}
+                                helpText="Lista os clientes que mais gastaram no período selecionado. Ordenados pelo valor total em reais gasto. Esta métrica ajuda a identificar os clientes mais valiosos (VIP), sendo importantes para estratégias de relacionamento, programas de fidelidade e ações de upselling direcionadas."
                             />
                         </div>
                     </div>

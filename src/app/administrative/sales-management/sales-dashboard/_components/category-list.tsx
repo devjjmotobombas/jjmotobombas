@@ -3,6 +3,8 @@ import React from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
+import { HelpTooltip } from './help-tooltip'
+
 export function CategoryList({ categories }: { categories: Array<{ category: string; qty: number; totalInCents: number }> }) {
     const formatCurrency = (cents: number) => {
         return (cents / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
@@ -11,7 +13,10 @@ export function CategoryList({ categories }: { categories: Array<{ category: str
     return (
         <Card className="h-full">
             <CardHeader className="pb-3">
-                <CardTitle className="text-lg font-semibold">Vendas por Categoria</CardTitle>
+                <CardTitle className="text-lg font-semibold flex items-center gap-2">
+                    Vendas por Categoria
+                    <HelpTooltip content="Mostra o desempenho de vendas agrupado por categoria de produtos. Cada item lista a quantidade vendida e o valor total faturado por categoria. Esta análise ajuda a identificar quais categorias são mais lucrativas, entender o mix de produtos e direcionar estratégias de marketing e estoque." />
+                </CardTitle>
             </CardHeader>
             <CardContent className="pt-0">
                 {categories.length === 0 ? (

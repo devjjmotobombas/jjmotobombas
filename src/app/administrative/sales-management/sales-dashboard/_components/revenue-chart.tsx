@@ -4,6 +4,8 @@ import React from 'react'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
+import { HelpTooltip } from './help-tooltip'
+
 interface RevenueData {
     date: string
     totalInCents: number
@@ -29,7 +31,10 @@ export function RevenueChart({ data }: RevenueChartProps) {
         <Card className="h-full">
             <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg font-semibold">Receita por Dia</CardTitle>
+                    <CardTitle className="text-lg font-semibold flex items-center gap-2">
+                        Receita por Dia
+                        <HelpTooltip content="Mostra a evolução diária da receita no período selecionado. Cada barra representa o faturamento total de um dia específico. O gráfico ajuda a identificar padrões de vendas, dias de maior movimento e tendências sazonais. Valores são calculados pelo preço de venda dos produtos." />
+                    </CardTitle>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <TrendingUp className="h-4 w-4" />
                         <span>Evolução diária</span>
@@ -59,7 +64,7 @@ export function RevenueChart({ data }: RevenueChartProps) {
                                                     style={{ width: `${percentage}%` }}
                                                 />
                                                 <div className="absolute inset-0 flex items-center justify-end pr-2">
-                                                    <span className="text-xs font-medium text-primary-foreground">
+                                                    <span className={`text-xs font-medium ${percentage === 100 ? 'text-primary-foreground' : 'text-blue-600'}`}>
                                                         {formatCurrency(item.totalInCents)}
                                                     </span>
                                                 </div>

@@ -10,6 +10,8 @@ interface Item {
     title: string
     subtitle?: string
     value?: number | string
+    badge?: string
+    badgeVariant?: 'default' | 'secondary' | 'destructive' | 'outline'
 }
 
 interface Props {
@@ -18,7 +20,7 @@ interface Props {
     helpText?: string
 }
 
-export function TopList({ title, items, helpText }: Props) {
+export function StockTopList({ title, items, helpText }: Props) {
     return (
         <Card className="h-full">
             <CardHeader className="pb-3">
@@ -50,6 +52,11 @@ export function TopList({ title, items, helpText }: Props) {
                                             </div>
                                         )}
                                     </div>
+                                    {item.badge && (
+                                        <Badge variant={item.badgeVariant || 'secondary'} className="text-xs">
+                                            {item.badge}
+                                        </Badge>
+                                    )}
                                 </div>
                                 <div className="text-right ml-3">
                                     {typeof item.value !== 'undefined' && (
