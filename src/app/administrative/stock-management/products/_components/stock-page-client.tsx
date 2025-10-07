@@ -116,7 +116,10 @@ export default function StockPageClient({ initialData }: StockPageClientProps) {
                         <ViewToggle view={view} onViewChange={setView} />
                         <div className="flex flex-col gap-2 sm:flex-row sm:gap-2">
                             <AddMovementStockButton products={data.products} />
-                            <AddProductButton />
+                            <AddProductButton
+                                categories={data.categories}
+                                suppliers={data.suppliers}
+                            />
                         </div>
                     </div>
                 </PageActions>

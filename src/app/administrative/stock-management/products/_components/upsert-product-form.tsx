@@ -8,8 +8,6 @@ import { NumericFormat } from "react-number-format";
 import { toast } from "sonner";
 import z from "zod";
 
-import { getProductCategories } from "@/actions/get-product-categories";
-import { getSuppliers } from "@/actions/get-suppliers";
 import { upsertProduct } from "@/actions/upsert-product";
 import { uploadProductImage } from "@/actions/upsert-product-image";
 import { Button } from "@/components/ui/button";
@@ -39,12 +37,12 @@ const formSchema = z.object({
 
 interface upsertProductoForm {
     product?: typeof productsTable.$inferSelect;
+    categories: string[];
+    suppliers: Array<{ id: string; name: string }>;
     onSuccess?: () => void;
 }
 
-const UpsertProductForm = ({ product, onSuccess }: upsertProductoForm) => {
-    const [categories, setCategories] = React.useState<string[]>([]);
-    const [suppliers, setSuppliers] = React.useState<{ id: string; name: string }[]>([]);
+const UpsertProductForm = ({ product, categories, suppliers, onSuccess }: upsertProductoForm) => {
     const [openCategoryCombobox, setOpenCategoryCombobox] = React.useState(false);
     const [openSupplierCombobox, setOpenSupplierCombobox] = React.useState(false);
     const [imageFile, setImageFile] = React.useState<File>();
@@ -68,33 +66,6 @@ const UpsertProductForm = ({ product, onSuccess }: upsertProductoForm) => {
         }
     })
 
-    const getCategoriesAction = useAction(getProductCategories, {
-        onSuccess: (data) => {
-            if (data?.data) {
-                setCategories(data.data);
-            }
-        },
-        onError: () => {
-            toast.error("Erro ao buscar categorias.");
-        }
-    });
-
-    const getSuppliersAction = useAction(getSuppliers, {
-        onSuccess: (data) => {
-            if (data?.data) {
-                setSuppliers(data.data);
-            }
-        },
-        onError: () => {
-            toast.error("Erro ao buscar fornecedores.");
-        }
-    });
-
-    React.useEffect(() => {
-        getCategoriesAction.execute();
-        getSuppliersAction.execute();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
