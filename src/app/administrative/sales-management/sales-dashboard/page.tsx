@@ -75,7 +75,7 @@ export default async function SalesDashboardPage({ searchParams }: PageProps) {
         <PageContainer>
             <PageHeader>
                 <PageHeaderContent>
-                    <PageTitle>Dashboard de Vendas</PageTitle>
+                    <PageTitle>Relatórios de Vendas</PageTitle>
                     <PageDescription>Visão geral das vendas e desempenho da empresa</PageDescription>
                 </PageHeaderContent>
                 <PageActions>
@@ -86,10 +86,10 @@ export default async function SalesDashboardPage({ searchParams }: PageProps) {
                 <div className="space-y-8">
                     {/* Filtros de período */}
                     <div className="bg-card border rounded-lg p-6">
-                        <h3 className="text-lg font-semibold mb-4">Filtrar por Período</h3>
-                        <form method="get" className="flex flex-col sm:flex-row gap-4 items-end">
-                            <div className="flex-1">
-                                <label className="text-sm font-medium text-muted-foreground">Data de Início</label>
+                        <h3 className="text-lg font-semibold mb-4 text-center sm:text-left">Filtrar por Período</h3>
+                        <form method="get" className="flex flex-col sm:flex-row gap-4 items-center sm:items-end">
+                            <div className="w-full sm:flex-1">
+                                <label className="text-sm font-medium text-muted-foreground block text-center sm:text-left">Data de Início</label>
                                 <input
                                     type="date"
                                     name="startDate"
@@ -97,8 +97,8 @@ export default async function SalesDashboardPage({ searchParams }: PageProps) {
                                     className="block mt-1 w-full px-3 py-2 border border-input rounded-md bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
                                 />
                             </div>
-                            <div className="flex-1">
-                                <label className="text-sm font-medium text-muted-foreground">Data de Fim</label>
+                            <div className="w-full sm:flex-1">
+                                <label className="text-sm font-medium text-muted-foreground block text-center sm:text-left">Data de Fim</label>
                                 <input
                                     type="date"
                                     name="endDate"
@@ -108,7 +108,7 @@ export default async function SalesDashboardPage({ searchParams }: PageProps) {
                             </div>
                             <button
                                 type="submit"
-                                className="px-6 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors font-medium"
+                                className="w-full sm:w-auto px-6 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors font-medium"
                             >
                                 Aplicar Filtro
                             </button>
@@ -116,7 +116,7 @@ export default async function SalesDashboardPage({ searchParams }: PageProps) {
                     </div>
 
                     {/* Cards de resumo */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-4 gap-6">
                         <SummaryCard
                             title="Faturamento Total"
                             value={(data.totalRevenueInCents / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
