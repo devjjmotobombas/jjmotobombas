@@ -147,7 +147,7 @@ const UpsertBudgetForm = ({ budget, clients, products, onSuccess }: UpsertBudget
                                             <SelectContent>
                                                 {clients.map((client) => (
                                                     <SelectItem key={client.id} value={client.id}>
-                                                        {client.name} - {client.phoneNumber}
+                                                        {client.name}
                                                     </SelectItem>
                                                 ))}
                                             </SelectContent>
