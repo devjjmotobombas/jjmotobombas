@@ -21,7 +21,7 @@ interface SaleCardProps {
         total: number;
         paymentMethod: string;
         status: string;
-        createdAT: Date;
+        createdAt: Date;
         updatedAt: Date | null;
         client: {
             id: string;
@@ -36,7 +36,7 @@ interface SaleCardProps {
         total: number;
         paymentMethod: string;
         status: string;
-        createdAT: Date;
+        createdAt: Date;
         updatedAt: Date | null;
         client: {
             id: string;
@@ -129,7 +129,7 @@ const SaleCard = ({ sale, onEdit, onDelete }: SaleCardProps) => {
         totalPrice: number;
     }>;
 
-    const createdDate = new Date(sale.createdAT);
+    const createdDate = new Date(sale.createdAt);
 
     return (
         <>

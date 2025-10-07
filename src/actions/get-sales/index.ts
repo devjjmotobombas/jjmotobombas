@@ -27,7 +27,7 @@ export const getSales = actionClient
                 total: salesTable.total,
                 paymentMethod: salesTable.paymentMethod,
                 status: salesTable.status,
-                createdAT: salesTable.createdAT,
+                createdAt: salesTable.createdAt,
                 updatedAt: salesTable.updatedAt,
                 client: {
                     id: clientsTable.id,
@@ -37,7 +37,7 @@ export const getSales = actionClient
             })
             .from(salesTable)
             .innerJoin(clientsTable, eq(salesTable.clientId, clientsTable.id))
-            .orderBy(desc(salesTable.createdAT));
+            .orderBy(desc(salesTable.createdAt));
 
         return sales;
     });

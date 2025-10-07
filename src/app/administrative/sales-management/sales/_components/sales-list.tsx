@@ -16,7 +16,7 @@ interface SalesListProps {
         total: number;
         paymentMethod: string;
         status: string;
-        createdAT: Date;
+        createdAt: Date;
         updatedAt: Date | null;
         client: {
             id: string;
@@ -38,7 +38,7 @@ const SalesList = ({ sales, clients, products }: SalesListProps) => {
         total: number;
         paymentMethod: string;
         status: string;
-        createdAT: Date;
+        createdAt: Date;
         updatedAt: Date | null;
         client: {
             id: string;
@@ -74,7 +74,7 @@ const SalesList = ({ sales, clients, products }: SalesListProps) => {
         total: number;
         paymentMethod: string;
         status: string;
-        createdAT: Date;
+        createdAt: Date;
         updatedAt: Date | null;
         client: {
             id: string;

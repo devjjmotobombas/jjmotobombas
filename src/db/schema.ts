@@ -89,7 +89,7 @@ export const enterprisesTable = pgTable("enterprises", {
   phoneNumber: text("phone_number").notNull(),
   register: text("register").notNull(),
   avatarImageURL: text("avatar_image_url"),
-  createdAT: timestamp("created_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
     .$onUpdate(() => new Date()),
@@ -111,7 +111,7 @@ export const clientsTable = pgTable("clients", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: text("name").notNull(),
   phoneNumber: text("phone_number").notNull().unique(),
-  createdAT: timestamp("created_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
     .$onUpdate(() => new Date()),
@@ -148,7 +148,7 @@ export const productsTable = pgTable("products", {
   code: text("code"),
   supplierId: uuid("supplier_id")
     .references(() => suppliersTable.id, { onDelete: "cascade" }),
-  createdAT: timestamp("created_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
     .$onUpdate(() => new Date()),
@@ -221,7 +221,7 @@ export const budgetsTable = pgTable("budgets", {
   totalInCents: integer("total_in_cents").notNull(),
   validUntil: timestamp("valid_until").notNull(),
   status: text("status").notNull().default("offered"),
-  createdAT: timestamp("created_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
     .$onUpdate(() => new Date()),
@@ -254,8 +254,8 @@ export const salesTable = pgTable("sales", {
   total: integer("total").notNull(),
   paymentMethod: text("payment_method").notNull(),
   status: text("status").notNull().default("pending"),
-  createdAT: timestamp("created_at").defaultNow().notNull(),
-  budgetId: uuid("buget_id")
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  budgetId: uuid("budget_id")
     .references(() => budgetsTable.id, { onDelete: "cascade" }),
   clientId: uuid("client_id")
     .notNull()
@@ -286,7 +286,7 @@ export const saleItemsTable = pgTable("sale_items", {
   productId: uuid("product_id")
     .notNull()
     .references(() => productsTable.id, { onDelete: "cascade" }),
-  createdAT: timestamp("created_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
     .$onUpdate(() => new Date()),

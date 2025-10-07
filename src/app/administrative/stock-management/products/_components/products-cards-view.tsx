@@ -25,7 +25,7 @@ interface Product {
     } | null;
     imageURL: string | null;
     publishForSale: boolean | null;
-    createdAT: Date;
+    createdAt: Date;
     updatedAt: Date;
     enterpriseId: string;
 }

@@ -37,7 +37,7 @@ interface UpsertSaleFormProps {
         items: unknown;
         total: number;
         paymentMethod: string;
-        createdAT: Date;
+        createdAt: Date;
         updatedAt: Date | null;
     };
     clients: Array<{ id: string; name: string; phoneNumber: string }>;

@@ -30,7 +30,7 @@ export interface StockData {
         } | null;
         imageURL: string | null;
         publishForSale: boolean | null;
-        createdAT: Date;
+        createdAt: Date;
         updatedAt: Date;
         enterpriseId: string;
     }>;
@@ -76,7 +76,7 @@ export async function getStockData({
         with: {
             supplier: true,
         },
-        orderBy: (products, { desc }) => [desc(products.createdAT)],
+        orderBy: (products, { desc }) => [desc(products.createdAt)],
     });
 
     // Calcular valor total do estoque
@@ -125,8 +125,8 @@ export async function getStockData({
                 : null,
             imageURL: product.imageURL,
             publishForSale: product.publishForSale,
-            createdAT: product.createdAT,
-            updatedAt: product.updatedAt || product.createdAT,
+            createdAt: product.createdAt,
+            updatedAt: product.updatedAt || product.createdAt,
             enterpriseId: product.enterpriseId,
         })),
         totalStockValue,

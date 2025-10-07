@@ -24,7 +24,7 @@ export const exportBudgetPDF = actionClient
                 totalInCents: budgetsTable.totalInCents,
                 validUntil: budgetsTable.validUntil,
                 status: budgetsTable.status,
-                createdAT: budgetsTable.createdAT,
+                createdAt: budgetsTable.createdAt,
                 client: {
                     id: clientsTable.id,
                     name: clientsTable.name,
@@ -135,7 +135,7 @@ export const exportBudgetPDF = actionClient
         yPosition += 8;
 
         // Data de criação
-        const createdDate = new Date(budgetData.createdAT).toLocaleDateString("pt-BR");
+        const createdDate = new Date(budgetData.createdAt).toLocaleDateString("pt-BR");
         doc.text(`Data: ${createdDate}`, 20, yPosition);
         yPosition += 8;
 

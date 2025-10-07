@@ -33,7 +33,7 @@ export interface SaleDashboardResult {
 function buildDateCondition(startDate?: Date, endDate?: Date) {
     const conds: ReturnType<typeof gte>[] = [];
     if (startDate) {
-        conds.push(gte(salesTable.createdAT, startDate));
+        conds.push(gte(salesTable.createdAt, startDate));
     }
     if (endDate) {
         // add one day to make endDate inclusive until 23:59:59.999
@@ -48,7 +48,7 @@ function buildDateCondition(startDate?: Date, endDate?: Date) {
 function lteOrEqCreatedAt(date: Date) {
     // we'll use lt(date + 1ms) to emulate <=
     const d = new Date(date.getTime() + 1);
-    return lt(salesTable.createdAT, d);
+    return lt(salesTable.createdAt, d);
 }
 
 export async function getSaleDashboard({ enterpriseId, startDate, endDate }: SaleDashboardParams): Promise<SaleDashboardResult> {
@@ -137,11 +137,11 @@ export async function getSaleDashboard({ enterpriseId, startDate, endDate }: Sal
 
         // revenue by day
         db
-            .select({ date: sql`to_char(${salesTable.createdAT}::date, 'YYYY-MM-DD')`, total: sql`coalesce(sum(${salesTable.total}),0)` })
+            .select({ date: sql`to_char(${salesTable.createdAt}::date, 'YYYY-MM-DD')`, total: sql`coalesce(sum(${salesTable.total}),0)` })
             .from(salesTable)
             .where(baseSalesCond())
-            .groupBy(sql`(${salesTable.createdAT}::date)`)
-            .orderBy(sql`${salesTable.createdAT}::date`),
+            .groupBy(sql`(${salesTable.createdAt}::date)`)
+            .orderBy(sql`${salesTable.createdAt}::date`),
 
         // previous period revenue (if dates provided)
         (async () => {
@@ -149,7 +149,7 @@ export async function getSaleDashboard({ enterpriseId, startDate, endDate }: Sal
             const periodMillis = endDate.getTime() - startDate.getTime();
             const prevStart = new Date(startDate.getTime() - periodMillis - 1);
             const prevEnd = new Date(startDate.getTime() - 1);
-            const prevDateConds = [gte(salesTable.createdAT, prevStart), lt(salesTable.createdAT, new Date(prevEnd.getTime() + 1))];
+            const prevDateConds = [gte(salesTable.createdAt, prevStart), lt(salesTable.createdAt, new Date(prevEnd.getTime() + 1))];
             const rows = await db.select({ prevRevenue: sql`coalesce(sum(${salesTable.total}),0)` }).from(salesTable).where(and(...(enterpriseClientIds.length ? [inArray(salesTable.clientId, enterpriseClientIds)] : []), ...prevDateConds));
             return rows;
         })(),

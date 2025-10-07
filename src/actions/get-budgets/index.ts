@@ -21,7 +21,7 @@ export const getBudgets = actionClient
 
         const budgets = await db.query.budgetsTable.findMany({
             where: eq(budgetsTable.enterpriseId, enterprise.id),
-            orderBy: (budgets, { desc }) => [desc(budgets.createdAT)],
+            orderBy: (budgets, { desc }) => [desc(budgets.createdAt)],
             with: {
                 client: true,
             },
