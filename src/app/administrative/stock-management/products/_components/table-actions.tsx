@@ -80,8 +80,11 @@ const TableProductActions = ({ product }: ProductsTableActionsProps) => {
                     </DropdownMenu>
                     <UpsertProductForm
                         product={product}
+                        categories={[]}
+                        suppliers={[]}
                         onSuccess={() => setUpsertDialgoOpen(false)}
                     />
+
                     <AlertDialogContent>
                         <AlertDialogHeader>
                             <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
