@@ -28,10 +28,10 @@ export const metadata: Metadata = {
 }
 
 interface PageProps {
-    searchParams?: {
+    searchParams?: Promise<{
         startDate?: string;
         endDate?: string;
-    };
+    }>;
 }
 
 export default async function SalesDashboardPage({ searchParams }: PageProps) {
