@@ -10,7 +10,7 @@ import { deleteSale } from "@/actions/delete-sale";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { formatCurrencyInCents } from "@/helpers/currency";
+import { formatCurrency } from "@/helpers/currency";
 import { formatPhoneNumber } from "@/helpers/phone";
 
 interface SaleCardProps {
@@ -181,11 +181,11 @@ const SaleCard = ({ sale, onEdit, onDelete }: SaleCardProps) => {
                                     <div className="flex-1">
                                         <span className="font-medium">{item.productName}</span>
                                         <span className="text-muted-foreground ml-2">
-                                            x{item.quantity} - {formatCurrencyInCents(item.unitPrice)}
+                                            x{item.quantity} - {formatCurrency(item.unitPrice)}
                                         </span>
                                     </div>
                                     <span className="font-medium">
-                                        {formatCurrencyInCents(item.totalPrice)}
+                                        {formatCurrency(item.totalPrice)}
                                     </span>
                                 </div>
                             ))}
@@ -196,7 +196,7 @@ const SaleCard = ({ sale, onEdit, onDelete }: SaleCardProps) => {
                         <div className="flex justify-between items-center">
                             <span className="text-lg font-semibold">Total:</span>
                             <span className="text-xl font-bold text-primary">
-                                {formatCurrencyInCents(sale.total)}
+                                {formatCurrency(sale.total)}
                             </span>
                         </div>
                     </div>
