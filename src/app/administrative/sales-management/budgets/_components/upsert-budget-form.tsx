@@ -275,10 +275,8 @@ const UpsertBudgetForm = ({ budget, clients, products, onSuccess }: UpsertBudget
                                                         <FormLabel>Total do item</FormLabel>
                                                         <FormControl>
                                                             <Input
-                                                                type="number"
-                                                                step="0.01"
-                                                                min="0"
-                                                                {...field}
+                                                                type="text"
+                                                                value={formatCurrency(field.value)}
                                                                 disabled
                                                                 className="bg-muted"
                                                             />

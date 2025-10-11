@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle } f
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { formatCurrencyInCents } from "@/helpers/currency";
+import { formatCurrency } from "@/helpers/currency";
 
 const formSchema = z.object({
     clientId: z.string().min(1, { message: "Cliente é obrigatório" }),
@@ -261,10 +261,8 @@ const UpsertSaleForm = ({ sale, clients, products, onSuccess }: UpsertSaleFormPr
                                                             <FormLabel>Total do item</FormLabel>
                                                             <FormControl>
                                                                 <Input
-                                                                    type="number"
-                                                                    step="0.01"
-                                                                    min="0"
-                                                                    {...field}
+                                                                    type="text"
+                                                                    value={formatCurrency(field.value)}
                                                                     disabled
                                                                     className="bg-muted"
                                                                 />
@@ -291,7 +289,7 @@ const UpsertSaleForm = ({ sale, clients, products, onSuccess }: UpsertSaleFormPr
 
                         <div className="flex justify-between items-center p-4 bg-muted rounded-lg">
                             <span className="text-lg font-semibold">Total da venda:</span>
-                            <span className="text-2xl font-bold">{formatCurrencyInCents(total)}</span>
+                            <span className="text-2xl font-bold">{formatCurrency(total)}</span>
                         </div>
 
                         <DialogFooter>
