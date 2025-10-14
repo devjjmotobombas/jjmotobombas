@@ -25,7 +25,7 @@ interface SalesListProps {
         };
     }>;
     clients: Array<{ id: string; name: string; phoneNumber: string }>;
-    products: Array<{ id: string; name: string; salePriceInCents: number; quantity_in_stock: number | null }>;
+    products: Array<{ id: string; name: string; salePriceInCents: number; quantity_in_stock: number | null; isService: boolean | null }>;
 }
 
 const SalesList = ({ sales, clients, products }: SalesListProps) => {

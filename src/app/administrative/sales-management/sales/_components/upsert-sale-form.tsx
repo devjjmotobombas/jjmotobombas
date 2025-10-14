@@ -28,7 +28,7 @@ interface UpsertSaleFormProps {
         updatedAt: Date | null;
     };
     clients: Array<{ id: string; name: string; phoneNumber: string }>;
-    products: Array<{ id: string; name: string; salePriceInCents: number; quantity_in_stock: number | null; isService: boolean }>;
+    products: Array<{ id: string; name: string; salePriceInCents: number; quantity_in_stock: number | null; isService: boolean | null }>;
     onSuccess?: () => void;
 }
 

@@ -28,6 +28,7 @@ interface Product {
     createdAt: Date;
     updatedAt: Date;
     enterpriseId: string;
+    isService: boolean | null;
 }
 
 interface ProductsCardsViewProps {

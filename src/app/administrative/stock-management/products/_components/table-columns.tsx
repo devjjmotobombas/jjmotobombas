@@ -28,6 +28,7 @@ type Product = {
     createdAt: Date;
     updatedAt: Date;
     enterpriseId: string;
+    isService: boolean | null;
 };
 
 const getStatusBadge = (status: string | null) => {
