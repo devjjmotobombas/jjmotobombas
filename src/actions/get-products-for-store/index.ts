@@ -46,6 +46,7 @@ export const getProductsForStore = actionClient
                 salePriceInCents: true,
                 quantity_in_stock: true,
                 category: true,
+                isService: true,
             },
         });
 

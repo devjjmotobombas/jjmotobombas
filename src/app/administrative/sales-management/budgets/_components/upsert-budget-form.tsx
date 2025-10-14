@@ -37,7 +37,7 @@ const formSchema = z.object({
 interface UpsertBudgetFormProps {
     budget?: typeof budgetsTable.$inferSelect;
     clients: Array<{ id: string; name: string; phoneNumber: string }>;
-    products: Array<{ id: string; name: string; salePriceInCents: number; quantity_in_stock: number | null }>;
+    products: Array<{ id: string; name: string; salePriceInCents: number; quantity_in_stock: number | null; isService: boolean }>;
     onSuccess?: () => void;
 }
 
@@ -216,119 +216,129 @@ const UpsertBudgetForm = ({ budget, clients, products, onSuccess }: UpsertBudget
                                 </div>
                             </CardHeader>
                             <CardContent className="space-y-6">
-                                {fields.map((field, index) => (
-                                    <div key={field.id} className="border rounded-lg p-4 space-y-4">
-                                        <div className="flex justify-between gap-4">
-                                            <FormField
-                                                control={form.control}
-                                                name={`items.${index}.productId`}
-                                                render={({ field }) => (
-                                                    <FormItem className="flex-1">
-                                                        <FormLabel>Produto</FormLabel>
-                                                        <Select onValueChange={(value) => updateItem(index, "productId", value)} value={field.value}>
+                                {fields.map((field, index) => {
+                                    const selectedProduct = products.find(p => p.id === field.productId);
+                                    const isService = selectedProduct?.isService || false;
+
+                                    return (
+                                        <div key={field.id} className="border rounded-lg p-4 space-y-4">
+                                            <div className="flex justify-between gap-4">
+                                                <FormField
+                                                    control={form.control}
+                                                    name={`items.${index}.productId`}
+                                                    render={({ field }) => (
+                                                        <FormItem className="flex-1">
+                                                            <FormLabel>Produto</FormLabel>
+                                                            <Select onValueChange={(value) => updateItem(index, "productId", value)} value={field.value}>
+                                                                <FormControl>
+                                                                    <SelectTrigger>
+                                                                        <SelectValue placeholder="Selecione um produto" />
+                                                                    </SelectTrigger>
+                                                                </FormControl>
+                                                                <SelectContent>
+                                                                    {products.map((product) => (
+                                                                        <SelectItem key={product.id} value={product.id}>
+                                                                            <div className="flex flex-col">
+                                                                                <span className="font-medium">{product.name}</span>
+                                                                            </div>
+                                                                        </SelectItem>
+                                                                    ))}
+                                                                </SelectContent>
+                                                            </Select>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+
+                                                <FormField
+                                                    control={form.control}
+                                                    name={`items.${index}.quantity`}
+                                                    render={({ field }) => (
+                                                        <FormItem className="flex-1">
+                                                            <FormLabel>Quantidade</FormLabel>
                                                             <FormControl>
-                                                                <SelectTrigger>
-                                                                    <SelectValue placeholder="Selecione um produto" />
-                                                                </SelectTrigger>
+                                                                <Input
+                                                                    type="number"
+                                                                    min="0"
+                                                                    {...field}
+                                                                    onChange={(e) => {
+                                                                        const value = parseInt(e.target.value) || 0;
+                                                                        field.onChange(value);
+                                                                        updateItem(index, "quantity", value);
+                                                                    }}
+                                                                />
                                                             </FormControl>
-                                                            <SelectContent>
-                                                                {products.map((product) => (
-                                                                    <SelectItem key={product.id} value={product.id}>
-                                                                        <div className="flex flex-col">
-                                                                            <span className="font-medium">{product.name}</span>
-                                                                        </div>
-                                                                    </SelectItem>
-                                                                ))}
-                                                            </SelectContent>
-                                                        </Select>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
+                                                            {isService && (
+                                                                <p className="text-sm text-muted-foreground">
+                                                                    Serviço - sem controle de estoque
+                                                                </p>
+                                                            )}
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
 
-                                            <FormField
-                                                control={form.control}
-                                                name={`items.${index}.quantity`}
-                                                render={({ field }) => (
-                                                    <FormItem className="flex-1">
-                                                        <FormLabel>Quantidade</FormLabel>
-                                                        <FormControl>
-                                                            <Input
-                                                                type="number"
-                                                                min="0"
-                                                                {...field}
-                                                                onChange={(e) => {
-                                                                    const value = parseInt(e.target.value) || 0;
-                                                                    field.onChange(value);
-                                                                    updateItem(index, "quantity", value);
+                                            <div className="flex items-center justify-between">
+                                                <FormField
+                                                    control={form.control}
+                                                    name={`items.${index}.unitPriceInCents`}
+                                                    render={({ field }) => (
+                                                        <FormItem className="flex-1 max-w-xs">
+                                                            <FormLabel>Preço unitário</FormLabel>
+                                                            <NumericFormat
+                                                                value={field.value}
+                                                                onValueChange={(value) => {
+                                                                    field.onChange(value.floatValue);
+                                                                    updateItem(index, "unitPriceInCents", value.floatValue || 0);
                                                                 }}
+                                                                decimalScale={2}
+                                                                fixedDecimalScale
+                                                                decimalSeparator=","
+                                                                allowNegative={false}
+                                                                allowLeadingZeros={false}
+                                                                thousandSeparator="."
+                                                                customInput={Input}
+                                                                prefix="R$"
+                                                                className="text-sm"
                                                             />
-                                                        </FormControl>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+
+                                                <FormField
+                                                    control={form.control}
+                                                    name={`items.${index}.totalPriceInCents`}
+                                                    render={({ field }) => (
+                                                        <FormItem className="flex-1 max-w-xs">
+                                                            <FormLabel>Total do item</FormLabel>
+                                                            <FormControl>
+                                                                <Input
+                                                                    type="text"
+                                                                    value={formatCurrency(field.value)}
+                                                                    disabled
+                                                                    className="bg-muted"
+                                                                />
+                                                            </FormControl>
+                                                        </FormItem>
+                                                    )}
+                                                />
+
+                                                <Button
+                                                    type="button"
+                                                    variant="destructive"
+                                                    size="sm"
+                                                    onClick={() => remove(index)}
+                                                    disabled={fields.length === 1}
+                                                    className="ml-4"
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                </Button>
+                                            </div>
                                         </div>
-
-                                        <div className="flex items-center justify-between">
-                                            <FormField
-                                                control={form.control}
-                                                name={`items.${index}.unitPriceInCents`}
-                                                render={({ field }) => (
-                                                    <FormItem className="flex-1 max-w-xs">
-                                                        <FormLabel>Preço unitário</FormLabel>
-                                                        <NumericFormat
-                                                            value={field.value}
-                                                            onValueChange={(value) => {
-                                                                field.onChange(value.floatValue);
-                                                                updateItem(index, "unitPriceInCents", value.floatValue || 0);
-                                                            }}
-                                                            decimalScale={2}
-                                                            fixedDecimalScale
-                                                            decimalSeparator=","
-                                                            allowNegative={false}
-                                                            allowLeadingZeros={false}
-                                                            thousandSeparator="."
-                                                            customInput={Input}
-                                                            prefix="R$"
-                                                            className="text-sm"
-                                                        />
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
-
-                                            <FormField
-                                                control={form.control}
-                                                name={`items.${index}.totalPriceInCents`}
-                                                render={({ field }) => (
-                                                    <FormItem className="flex-1 max-w-xs">
-                                                        <FormLabel>Total do item</FormLabel>
-                                                        <FormControl>
-                                                            <Input
-                                                                type="text"
-                                                                value={formatCurrency(field.value)}
-                                                                disabled
-                                                                className="bg-muted"
-                                                            />
-                                                        </FormControl>
-                                                    </FormItem>
-                                                )}
-                                            />
-
-                                            <Button
-                                                type="button"
-                                                variant="destructive"
-                                                size="sm"
-                                                onClick={() => remove(index)}
-                                                disabled={fields.length === 1}
-                                                className="ml-4"
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                            </Button>
-                                        </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </CardContent>
                         </Card>
 

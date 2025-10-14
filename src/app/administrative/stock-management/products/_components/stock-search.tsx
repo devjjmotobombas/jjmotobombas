@@ -85,11 +85,13 @@ export function StockSearch({
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="all">Todas as categorias</SelectItem>
-                            {categories.map((cat) => (
-                                <SelectItem key={cat} value={cat}>
-                                    {cat}
-                                </SelectItem>
-                            ))}
+                            {categories
+                                .filter((cat) => cat && cat.trim() !== "")
+                                .map((cat) => (
+                                    <SelectItem key={cat} value={cat}>
+                                        {cat}
+                                    </SelectItem>
+                                ))}
                         </SelectContent>
                     </Select>
                 </div>
@@ -102,11 +104,13 @@ export function StockSearch({
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="all">Todos os fornecedores</SelectItem>
-                            {suppliers.map((supplier) => (
-                                <SelectItem key={supplier.id} value={supplier.id}>
-                                    {supplier.name}
-                                </SelectItem>
-                            ))}
+                            {suppliers
+                                .filter((supplier) => supplier.name && supplier.name.trim() !== "")
+                                .map((supplier) => (
+                                    <SelectItem key={supplier.id} value={supplier.id}>
+                                        {supplier.name}
+                                    </SelectItem>
+                                ))}
                         </SelectContent>
                     </Select>
                 </div>

@@ -23,16 +23,17 @@ import { cn } from "@/lib/utils";
 
 
 const formSchema = z.object({
-    name: z.string().trim().min(1, { message: "Nome do serviço é obrigatório." }),
+    name: z.string().trim().min(1, { message: "Nome do produto/serviço é obrigatório." }),
     description: z.string().trim().optional(),
-    category: z.string().trim().min(1, { message: "Categoria é obrigatório." }),
-    purchasePriceInCents: z.number().min(0.01, { message: "Preço de compra deve ser maior que zero." }),
+    category: z.string().trim().optional(),
+    purchasePriceInCents: z.number().optional(),
     salePriceInCents: z.number().min(0.01, { message: "Preço de venda deve ser maior que zero." }),
     supplierId: z.string().uuid().optional().or(z.literal("")),
-    quantity: z.string().trim().min(1, { message: "Quantidade é obrigatório." }).refine(value => !isNaN(Number(value)) && Number(value) > 0, { message: "Quantidade deve ser um número maior que zero." }),
+    quantity: z.string().trim().optional(),
     imageURL: z.string().url().optional().or(z.literal("")),
     code: z.string().trim().optional(),
     publishForSale: z.boolean(),
+    isService: z.boolean(),
 })
 
 interface upsertProductoForm {
@@ -63,8 +64,11 @@ const UpsertProductForm = ({ product, categories, suppliers, onSuccess }: upsert
             imageURL: product?.imageURL || "",
             code: product?.code || "",
             publishForSale: product?.publishForSale || false,
+            isService: product?.isService || false,
         }
     })
+
+    const isService = form.watch("isService");
 
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -99,12 +103,13 @@ const UpsertProductForm = ({ product, categories, suppliers, onSuccess }: upsert
         const payload = {
             ...values,
             id: product?.id,
-            quantity: Number(values.quantity),
-            purchasePriceInCents: Math.round(values.purchasePriceInCents * 100),
-            salePriceInCents: Math.round(values.salePriceInCents * 100),
+            quantity: Number(values.quantity) || 0,
+            purchasePriceInCents: values.purchasePriceInCents ? Math.round(values.purchasePriceInCents * 100) : 0,
+            salePriceInCents: values.salePriceInCents ? Math.round(values.salePriceInCents * 100) : 0,
             supplierId: values.supplierId === "" ? undefined : values.supplierId,
             imageURL: values.imageURL === "" ? undefined : values.imageURL,
             code: values.code === "" ? undefined : values.code,
+            isService: values.isService,
         };
 
         console.log("Payload to send:", payload);
@@ -143,12 +148,34 @@ const UpsertProductForm = ({ product, categories, suppliers, onSuccess }: upsert
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel className="text-sm">
-                                    Nome do produto <span className="text-red-300">*</span>
+                                    Nome do produto/serviço <span className="text-red-300">*</span>
                                 </FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Digite o nome do produto" {...field} className="text-sm" />
+                                    <Input placeholder="Digite o nome do produto ou serviço" {...field} className="text-sm" />
                                 </FormControl>
                                 <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="isService"
+                        render={({ field }) => (
+                            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                                <FormControl>
+                                    <Checkbox
+                                        checked={field.value}
+                                        onCheckedChange={field.onChange}
+                                    />
+                                </FormControl>
+                                <div className="space-y-1 leading-none">
+                                    <FormLabel className="text-sm">
+                                        Este é um serviço
+                                    </FormLabel>
+                                    <p className="text-xs text-muted-foreground">
+                                        Marque se este item é um serviço (mão de obra, consultoria, etc.)
+                                    </p>
+                                </div>
                             </FormItem>
                         )}
                     />
@@ -161,7 +188,12 @@ const UpsertProductForm = ({ product, categories, suppliers, onSuccess }: upsert
                                     Descrição
                                 </FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Digite a descrição do produto" {...field} className="text-sm" />
+                                    <Input
+                                        placeholder="Digite a descrição do produto"
+                                        {...field}
+                                        className="text-sm"
+                                        disabled={isService}
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -176,7 +208,12 @@ const UpsertProductForm = ({ product, categories, suppliers, onSuccess }: upsert
                                     Código do produto <span className="text-red-300">*</span>
                                 </FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Digite o código do produto" {...field} className="text-sm" />
+                                    <Input
+                                        placeholder="Digite o código do produto"
+                                        {...field}
+                                        className="text-sm"
+                                        disabled={isService}
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -195,6 +232,7 @@ const UpsertProductForm = ({ product, categories, suppliers, onSuccess }: upsert
                                                 variant="outline"
                                                 role="combobox"
                                                 aria-expanded={openCategoryCombobox}
+                                                disabled={isService}
                                                 className={cn(
                                                     "w-full justify-between text-sm",
                                                     !field.value && "text-muted-foreground"
@@ -221,7 +259,7 @@ const UpsertProductForm = ({ product, categories, suppliers, onSuccess }: upsert
                                             />
                                             <CommandList>
                                                 <CommandEmpty>
-                                                    {field.value?.length > 0 ? `Criar nova categoria: "${field.value}"` : "Nenhuma categoria encontrada."}
+                                                    {field.value?.length && field.value.length > 0 ? `Criar nova categoria: "${field.value}"` : "Nenhuma categoria encontrada."}
                                                 </CommandEmpty>
                                                 <CommandGroup>
                                                     {categories.map((category) => (
@@ -288,6 +326,7 @@ const UpsertProductForm = ({ product, categories, suppliers, onSuccess }: upsert
                                                 variant="outline"
                                                 role="combobox"
                                                 aria-expanded={openSupplierCombobox}
+                                                disabled={isService}
                                                 className="w-full justify-between text-sm"
                                             >
                                                 {field.value
@@ -356,7 +395,13 @@ const UpsertProductForm = ({ product, categories, suppliers, onSuccess }: upsert
                                     Quantidade <span className="text-red-300">*</span>
                                 </FormLabel>
                                 <FormControl>
-                                    <Input type="number" placeholder="Digite inicial de estoque" {...field} className="text-sm" />
+                                    <Input
+                                        type="number"
+                                        placeholder="Digite inicial de estoque"
+                                        {...field}
+                                        className="text-sm"
+                                        disabled={isService}
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -384,6 +429,7 @@ const UpsertProductForm = ({ product, categories, suppliers, onSuccess }: upsert
                                     customInput={Input}
                                     prefix="R$"
                                     className="text-sm"
+                                    disabled={isService}
                                 />
                                 <FormMessage />
                             </FormItem>
@@ -466,7 +512,7 @@ const UpsertProductForm = ({ product, categories, suppliers, onSuccess }: upsert
                                 type="file"
                                 accept="image/*"
                                 onChange={handleImageChange}
-                                disabled={isUploadingImage}
+                                disabled={isUploadingImage || isService}
                                 className="text-sm"
                             />
                             {isUploadingImage && (

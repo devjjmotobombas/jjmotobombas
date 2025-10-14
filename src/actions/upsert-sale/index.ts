@@ -1,6 +1,6 @@
 "use server";
 
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { db } from "@/db";
@@ -72,17 +72,30 @@ export const upsertSale = actionClient
 
             await db.insert(saleItemsTable).values(saleItems);
 
-            // Registrar movimentos de estoque para cada item vendido
-            for (const item of items) {
-                // Verificar se o produto tem estoque suficiente
-                const [product] = await db
-                    .select()
-                    .from(productsTable)
-                    .where(eq(productsTable.id, item.productId));
+            // Buscar informações de todos os produtos da venda
+            const productIds = items.map(item => item.productId);
+            const products = await db
+                .select()
+                .from(productsTable)
+                .where(inArray(productsTable.id, productIds));
 
+            // Verificar se todos os produtos existem
+            for (const item of items) {
+                const product = products.find(p => p.id === item.productId);
                 if (!product) {
                     throw new Error(`Produto ${item.productName} não encontrado`);
                 }
+            }
+
+            // Separar produtos físicos de serviços
+            const physicalProducts = items.filter(item => {
+                const product = products.find(p => p.id === item.productId);
+                return product && !product.isService;
+            });
+
+            // Registrar movimentos de estoque apenas para produtos físicos
+            for (const item of physicalProducts) {
+                const product = products.find(p => p.id === item.productId)!;
 
                 const currentStock = product.quantity_in_stock || 0;
                 if (currentStock < item.quantity) {

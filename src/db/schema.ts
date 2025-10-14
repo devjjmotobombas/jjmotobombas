@@ -137,15 +137,16 @@ export const productsTable = pgTable("products", {
   imageURL: text("image_url"),
   name: text("name").notNull(),
   description: text("description"),
-  category: text("category").notNull(),
-  quantity: integer("quantity").notNull(),
+  category: text("category"),
+  quantity: integer("quantity"),
   publishForSale: boolean("publish_for_sale").default(false),
-  purchasePriceInCents: integer("purchase_price_in_cents").notNull(),
+  purchasePriceInCents: integer("purchase_price_in_cents"),
   salePriceInCents: integer("sale_price_in_cents").notNull(),
-  quantity_in_stock: integer("quantity_in_stock").default(0), //Calculo
-  stockValueInCents: integer("stock_value_in_cents").default(0), //Calculo
-  stock_status: text("stock_status").default("in_stock"), //Calculo
+  quantity_in_stock: integer("quantity_in_stock").default(0),
+  stockValueInCents: integer("stock_value_in_cents").default(0),
+  stock_status: text("stock_status").default("in_stock"),
   code: text("code"),
+  isService: boolean("is_service").default(false),
   supplierId: uuid("supplier_id")
     .references(() => suppliersTable.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at").defaultNow().notNull(),

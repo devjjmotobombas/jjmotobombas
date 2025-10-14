@@ -17,20 +17,6 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatCurrency } from "@/helpers/currency";
 
-const formSchema = z.object({
-    clientId: z.string().min(1, { message: "Cliente é obrigatório" }),
-    items: z.array(z.object({
-        productId: z.string().min(1, { message: "Produto é obrigatório" }),
-        productName: z.string(),
-        quantity: z.number().min(1, { message: "Quantidade deve ser maior que 0" }),
-        unitPriceInCents: z.number().min(0.01, { message: "Preço unitário deve ser maior que zero." }),
-        totalPriceInCents: z.number().min(0.01, { message: "Preço total deve ser maior que zero." }),
-    })).min(1, { message: "Adicione pelo menos um item" }),
-    paymentMethod: z.enum(["cash", "credit_card", "debit_card", "pix", "bank_transfer"], {
-        message: "Método de pagamento é obrigatório"
-    }),
-});
-
 interface UpsertSaleFormProps {
     sale?: {
         id: string;
@@ -42,11 +28,40 @@ interface UpsertSaleFormProps {
         updatedAt: Date | null;
     };
     clients: Array<{ id: string; name: string; phoneNumber: string }>;
-    products: Array<{ id: string; name: string; salePriceInCents: number; quantity_in_stock: number | null }>;
+    products: Array<{ id: string; name: string; salePriceInCents: number; quantity_in_stock: number | null; isService: boolean }>;
     onSuccess?: () => void;
 }
 
 const UpsertSaleForm = ({ sale, clients, products, onSuccess }: UpsertSaleFormProps) => {
+    const formSchema = z.object({
+        clientId: z.string().min(1, { message: "Cliente é obrigatório" }),
+        items: z.array(z.object({
+            productId: z.string().min(1, { message: "Produto é obrigatório" }),
+            productName: z.string(),
+            quantity: z.number().min(1, { message: "Quantidade deve ser maior que 0" }),
+            unitPriceInCents: z.number().min(0.01, { message: "Preço unitário deve ser maior que zero." }),
+            totalPriceInCents: z.number().min(0.01, { message: "Preço total deve ser maior que zero." }),
+        })).min(1, { message: "Adicione pelo menos um item" }),
+        paymentMethod: z.enum(["cash", "credit_card", "debit_card", "pix", "bank_transfer"], {
+            message: "Método de pagamento é obrigatório"
+        }),
+    }).refine((data) => {
+        // Validação adicional para verificar se a quantidade não excede o estoque
+        return data.items.every((item) => {
+            const product = products.find(p => p.id === item.productId);
+            if (!product) return true; // Se não encontrar o produto, deixa passar
+
+            // Se for um serviço, não valida estoque
+            if (product.isService) return true;
+
+            const availableStock = product.quantity_in_stock || 0;
+            return item.quantity <= availableStock;
+        });
+    }, {
+        message: "A quantidade solicitada excede o estoque disponível",
+        path: ["items"]
+    });
+
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -208,6 +223,7 @@ const UpsertSaleForm = ({ sale, clients, products, onSuccess }: UpsertSaleFormPr
                                 {fields.map((field, index) => {
                                     const selectedProduct = products.find(p => p.id === field.productId);
                                     const availableStock = selectedProduct?.quantity_in_stock || 0;
+                                    const isService = selectedProduct?.isService || false;
 
                                     return (
                                         <div key={field.id} className="border rounded-lg p-4 space-y-4">
@@ -249,7 +265,7 @@ const UpsertSaleForm = ({ sale, clients, products, onSuccess }: UpsertSaleFormPr
                                                                 <Input
                                                                     type="number"
                                                                     min="1"
-                                                                    max={availableStock}
+                                                                    max={!isService && availableStock > 0 ? availableStock : undefined}
                                                                     {...field}
                                                                     onChange={(e) => {
                                                                         const value = parseInt(e.target.value) || 1;
@@ -258,6 +274,19 @@ const UpsertSaleForm = ({ sale, clients, products, onSuccess }: UpsertSaleFormPr
                                                                     }}
                                                                 />
                                                             </FormControl>
+                                                            {isService ? (
+                                                                <p className="text-sm text-muted-foreground">
+                                                                    Serviço - sem controle de estoque
+                                                                </p>
+                                                            ) : availableStock === 0 ? (
+                                                                <p className="text-sm text-destructive">
+                                                                    Produto sem estoque disponível
+                                                                </p>
+                                                            ) : (
+                                                                <p className="text-sm text-muted-foreground">
+                                                                    Estoque disponível: {availableStock}
+                                                                </p>
+                                                            )}
                                                             <FormMessage />
                                                         </FormItem>
                                                     )}

@@ -26,6 +26,7 @@ export const getProducts = actionClient
                 name: true,
                 salePriceInCents: true,
                 quantity_in_stock: true,
+                isService: true,
             },
         });
 

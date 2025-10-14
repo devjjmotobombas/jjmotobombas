@@ -39,6 +39,7 @@ export const upsertProduct = actionClient
             imageURL,
             code,
             publishForSale,
+            isService,
         } = parsedInput;
 
         let productId = id;
@@ -57,6 +58,7 @@ export const upsertProduct = actionClient
                     imageURL: imageURL || null,
                     code: code || null,
                     publishForSale,
+                    isService,
                     updatedAt: new Date(),
                 })
                 .where(eq(productsTable.id, productId));
@@ -74,8 +76,9 @@ export const upsertProduct = actionClient
                     imageURL: imageURL || null,
                     code: code || null,
                     publishForSale,
+                    isService,
                     quantity_in_stock: quantity,
-                    stockValueInCents: purchasePriceInCents * quantity,
+                    stockValueInCents: purchasePriceInCents ? purchasePriceInCents * (quantity || 0) : 0,
                     stock_status: "in_stock",
                     enterpriseId: enterprise.id,
                 })
