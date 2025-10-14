@@ -30,7 +30,8 @@ interface Product {
     imageURL: string | null;
     salePriceInCents: number;
     quantity_in_stock: number | null;
-    category: string;
+    category: string | null;
+    isService: boolean | null;
 }
 
 interface StoreContentProps {

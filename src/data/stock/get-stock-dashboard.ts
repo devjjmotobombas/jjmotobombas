@@ -16,11 +16,11 @@ export interface StockDashboardResult {
     totalProductsInStock: number;
     totalStockValueInCents: number;
     averageStockValueInCents: number;
-    productsWithLowStock: Array<{ productId: string; name: string; currentStock: number; minStock: number; category: string }>;
-    productsWithExcessStock: Array<{ productId: string; name: string; currentStock: number; avgMonthlyMovement: number; category: string }>;
+    productsWithLowStock: Array<{ productId: string; name: string; currentStock: number; minStock: number; category: string | null }>;
+    productsWithExcessStock: Array<{ productId: string; name: string; currentStock: number; avgMonthlyMovement: number; category: string | null }>;
     stockEntriesByPeriod: Array<{ date: string; quantity: number; valueInCents: number }>;
     stockExitsByPeriod: Array<{ date: string; quantity: number; valueInCents: number }>;
-    abcAnalysis: Array<{ productId: string; name: string; category: string; totalValueInCents: number; percentage: number; classification: 'A' | 'B' | 'C' }>;
+    abcAnalysis: Array<{ productId: string; name: string; category: string | null; totalValueInCents: number; percentage: number; classification: 'A' | 'B' | 'C' }>;
     mostMovedProducts: Array<{ productId: string; name: string; totalMovements: number; entries: number; exits: number; category: string }>;
     averageAcquisitionCost: number;
     stockTurnoverRate: number;

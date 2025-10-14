@@ -15,9 +15,9 @@ export interface StockData {
         id: string;
         name: string;
         description: string | null;
-        category: string;
-        quantity: number;
-        purchasePriceInCents: number;
+        category: string | null;
+        quantity: number | null;
+        purchasePriceInCents: number | null;
         salePriceInCents: number;
         quantity_in_stock: number | null;
         stockValueInCents: number | null;
@@ -30,6 +30,7 @@ export interface StockData {
         } | null;
         imageURL: string | null;
         publishForSale: boolean | null;
+        isService: boolean | null;
         createdAt: Date;
         updatedAt: Date;
         enterpriseId: string;
@@ -92,7 +93,7 @@ export async function getStockData({
         .from(productsTable)
         .where(eq(productsTable.enterpriseId, enterpriseId));
 
-    const categories = categoriesResult.map((item) => item.category);
+    const categories = categoriesResult.map((item) => item.category).filter((category): category is string => category !== null);
 
     // Buscar fornecedores
     const suppliers = await db.query.suppliersTable.findMany({
@@ -125,6 +126,7 @@ export async function getStockData({
                 : null,
             imageURL: product.imageURL,
             publishForSale: product.publishForSale,
+            isService: product.isService,
             createdAt: product.createdAt,
             updatedAt: product.updatedAt || product.createdAt,
             enterpriseId: product.enterpriseId,

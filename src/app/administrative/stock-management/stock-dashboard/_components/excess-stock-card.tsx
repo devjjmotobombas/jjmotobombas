@@ -10,7 +10,7 @@ interface ExcessStockItem {
     name: string
     currentStock: number
     avgMonthlyMovement: number
-    category: string
+    category: string | null
 }
 
 interface Props {
@@ -60,7 +60,7 @@ export function ExcessStockCard({ items }: Props) {
                                                 {item.name}
                                             </div>
                                             <div className="text-xs text-muted-foreground mt-1">
-                                                {item.category}
+                                                {item.category || 'Sem categoria'}
                                             </div>
                                         </div>
                                         <Badge className={`text-xs ${excessLevel.color}`}>

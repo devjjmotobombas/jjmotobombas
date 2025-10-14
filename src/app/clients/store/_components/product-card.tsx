@@ -18,7 +18,7 @@ interface Product {
     imageURL: string | null;
     salePriceInCents: number;
     quantity_in_stock: number | null;
-    category: string;
+    category: string | null;
 }
 
 interface ProductCardProps {
@@ -80,9 +80,11 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
                         <h3 className="font-semibold text-base sm:text-lg line-clamp-2 text-gray-900 flex-1">
                             {product.name}
                         </h3>
-                        <Badge variant="outline" className="bg-white text-gray-900 border-1 border-gray-200 text-xs w-fit">
-                            {product.category}
-                        </Badge>
+                        {product.category && (
+                            <Badge variant="outline" className="bg-white text-gray-900 border-1 border-gray-200 text-xs w-fit">
+                                {product.category}
+                            </Badge>
+                        )}
                     </div>
 
                     {product.description && (

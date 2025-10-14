@@ -8,7 +8,7 @@ import { HelpTooltip } from './help-tooltip'
 interface ABCItem {
     productId: string
     name: string
-    category: string
+    category: string | null
     totalValueInCents: number
     percentage: number
     classification: 'A' | 'B' | 'C'
@@ -79,7 +79,7 @@ export function ABCAnalysisCard({ items }: Props) {
                                                 {item.name}
                                             </div>
                                             <div className="text-xs text-muted-foreground mt-1">
-                                                {item.category}
+                                                {item.category || 'Sem categoria'}
                                             </div>
                                         </div>
                                         <Badge className={`text-xs ${getClassificationColor(item.classification)}`}>

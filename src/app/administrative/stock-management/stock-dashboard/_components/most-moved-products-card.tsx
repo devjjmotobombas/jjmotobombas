@@ -11,7 +11,7 @@ interface MovementItem {
     totalMovements: number
     entries: number
     exits: number
-    category: string
+    category: string | null
 }
 
 interface Props {
@@ -48,7 +48,7 @@ export function MostMovedProductsCard({ items }: Props) {
                                             {item.name}
                                         </div>
                                         <div className="text-xs text-muted-foreground mt-1">
-                                            {item.category}
+                                            {item.category || 'Sem categoria'}
                                         </div>
                                     </div>
                                 </div>
