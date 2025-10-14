@@ -10,9 +10,9 @@ type Product = {
     id: string;
     name: string;
     description: string | null;
-    category: string;
-    quantity: number;
-    purchasePriceInCents: number;
+    category: string | null;
+    quantity: number | null;
+    purchasePriceInCents: number | null;
     salePriceInCents: number;
     quantity_in_stock: number | null;
     stockValueInCents: number | null;
@@ -72,7 +72,7 @@ export const productsTableColumns: ColumnDef<Product>[] = [
         accessorKey: "category",
         header: "Categoria",
         cell: ({ row }) => (
-            <span className="text-sm">{row.original.category}</span>
+            <span className="text-sm">{row.original.category || "Sem categoria"}</span>
         ),
     },
     {
@@ -93,7 +93,7 @@ export const productsTableColumns: ColumnDef<Product>[] = [
         accessorKey: "purchasePriceInCents",
         header: "Preço de custo",
         cell: ({ row }) => {
-            const price = row.original.purchasePriceInCents / 100;
+            const price = (row.original.purchasePriceInCents || 0) / 100;
             return (
                 <span className="text-sm font-medium">
                     {formatCurrency(price)}
@@ -146,7 +146,7 @@ export const productsTableColumns: ColumnDef<Product>[] = [
         id: "profit_margin",
         header: "Margem",
         cell: ({ row }) => {
-            const purchasePrice = row.original.purchasePriceInCents / 100;
+            const purchasePrice = (row.original.purchasePriceInCents || 0) / 100;
             const salePrice = row.original.salePriceInCents / 100;
             const margin = salePrice - purchasePrice;
             const marginPercent = salePrice > 0 ? (margin / salePrice) * 100 : 0;

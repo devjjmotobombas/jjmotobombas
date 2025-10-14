@@ -10,9 +10,9 @@ interface Product {
     id: string;
     name: string;
     description: string | null;
-    category: string;
-    quantity: number;
-    purchasePriceInCents: number;
+    category: string | null;
+    quantity: number | null;
+    purchasePriceInCents: number | null;
     salePriceInCents: number;
     quantity_in_stock: number | null;
     stockValueInCents: number | null;
@@ -74,7 +74,7 @@ export function ProductsCardsView({ products }: ProductsCardsViewProps) {
             {products.map((product) => {
                 const statusBadge = getStatusBadge(product.stock_status);
                 const stockQuantity = product.quantity_in_stock || 0;
-                const purchasePrice = product.purchasePriceInCents / 100;
+                const purchasePrice = (product.purchasePriceInCents || 0) / 100;
                 const salePrice = product.salePriceInCents / 100;
                 const stockValue = stockQuantity * salePrice;
 
