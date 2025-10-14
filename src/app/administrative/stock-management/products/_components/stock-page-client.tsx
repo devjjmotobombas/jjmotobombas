@@ -43,7 +43,7 @@ export default function StockPageClient({ initialData }: StockPageClientProps) {
                 (product) =>
                     product.name.toLowerCase().includes(searchLower) ||
                     product.description?.toLowerCase().includes(searchLower) ||
-                    product.category.toLowerCase().includes(searchLower) ||
+                    (product.category?.toLowerCase().includes(searchLower) ?? false) ||
                     product.supplier?.name.toLowerCase().includes(searchLower)
             );
         }
@@ -69,7 +69,7 @@ export default function StockPageClient({ initialData }: StockPageClientProps) {
         }, 0);
 
         const totalMargin = filteredProducts.reduce((total, product) => {
-            const purchasePrice = product.purchasePriceInCents / 100;
+            const purchasePrice = (product.purchasePriceInCents || 0) / 100;
             const salePrice = product.salePriceInCents / 100;
             const margin = salePrice > 0 ? ((salePrice - purchasePrice) / salePrice) * 100 : 0;
             return total + margin;
