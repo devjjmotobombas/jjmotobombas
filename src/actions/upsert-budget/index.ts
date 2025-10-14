@@ -27,16 +27,7 @@ export const upsertBudget = actionClient
             throw new Error("Enterprise not found");
         }
 
-        const { id, clientId, items, total, validUntil, status } = parsedInput;
-
-        // Converter valores para centavos
-        const itemsInCents = items.map(item => ({
-            ...item,
-            unitPrice: Math.round(item.unitPrice * 100), // Converter para centavos
-            totalPrice: Math.round(item.totalPrice * 100), // Converter para centavos
-        }));
-
-        const totalInCents = Math.round(total * 100); // Converter total para centavos
+        const { id, clientId, items, totalInCents, validUntil, status } = parsedInput;
 
         // Se `id` estiver presente, atualiza o orçamento existente
         let budgetId = id;
@@ -45,8 +36,8 @@ export const upsertBudget = actionClient
             await db
                 .update(budgetsTable)
                 .set({
-                    items: itemsInCents,
-                    totalInCents: totalInCents,
+                    items,
+                    totalInCents,
                     validUntil: dayjs(validUntil).utc().toDate(),
                     status,
                     updatedAt: new Date(),
@@ -57,8 +48,8 @@ export const upsertBudget = actionClient
                 .insert(budgetsTable)
                 .values({
                     clientId,
-                    items: itemsInCents,
-                    totalInCents: totalInCents,
+                    items,
+                    totalInCents,
                     validUntil: dayjs(validUntil).utc().toDate(),
                     status,
                     enterpriseId: enterprise.id,

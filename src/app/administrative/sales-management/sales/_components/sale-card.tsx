@@ -10,7 +10,7 @@ import { deleteSale } from "@/actions/delete-sale";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { formatCurrency } from "@/helpers/currency";
+import { formatCurrencyInCents } from "@/helpers/currency";
 import { formatPhoneNumber } from "@/helpers/phone";
 
 interface SaleCardProps {
@@ -125,8 +125,8 @@ const SaleCard = ({ sale, onEdit, onDelete }: SaleCardProps) => {
     const items = sale.items as Array<{
         productName: string;
         quantity: number;
-        unitPrice: number;
-        totalPrice: number;
+        unitPriceInCents: number;
+        totalPriceInCents: number;
     }>;
 
     const createdDate = new Date(sale.createdAt);
@@ -181,11 +181,11 @@ const SaleCard = ({ sale, onEdit, onDelete }: SaleCardProps) => {
                                     <div className="flex-1">
                                         <span className="font-medium">{item.productName}</span>
                                         <span className="text-muted-foreground ml-2">
-                                            x{item.quantity} - {formatCurrency(item.unitPrice)}
+                                            x{item.quantity}
                                         </span>
                                     </div>
                                     <span className="font-medium">
-                                        {formatCurrency(item.totalPrice)}
+                                        {formatCurrencyInCents(item.totalPriceInCents)}
                                     </span>
                                 </div>
                             ))}
@@ -196,7 +196,7 @@ const SaleCard = ({ sale, onEdit, onDelete }: SaleCardProps) => {
                         <div className="flex justify-between items-center">
                             <span className="text-lg font-semibold">Total:</span>
                             <span className="text-xl font-bold text-primary">
-                                {formatCurrency(sale.total)}
+                                {formatCurrencyInCents(sale.total)}
                             </span>
                         </div>
                     </div>

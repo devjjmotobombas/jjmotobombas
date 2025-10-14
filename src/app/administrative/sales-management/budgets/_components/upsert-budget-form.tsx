@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon, Loader2, Plus, Trash2 } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { useFieldArray, useForm } from "react-hook-form";
+import { NumericFormat } from "react-number-format";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -26,8 +27,8 @@ const formSchema = z.object({
         productId: z.string().min(1, { message: "Produto é obrigatório" }),
         productName: z.string(),
         quantity: z.number().min(0, { message: "Quantidade deve ser maior ou igual a 0" }),
-        unitPrice: z.number().min(0, { message: "Preço unitário deve ser maior ou igual a 0" }),
-        totalPrice: z.number().min(0, { message: "Preço total deve ser maior ou igual a 0" }),
+        unitPriceInCents: z.number().min(0.01, { message: "Preço unitário deve ser maior que zero." }),
+        totalPriceInCents: z.number().min(0.01, { message: "Preço total deve ser maior que zero." }),
     })).min(1, { message: "Adicione pelo menos um item" }),
     validUntil: z.date({ message: "Data de validade é obrigatória" }),
     status: z.enum(["offered", "accepted", "rejected", "expired"]).default("offered"),
@@ -46,11 +47,11 @@ const UpsertBudgetForm = ({ budget, clients, products, onSuccess }: UpsertBudget
         resolver: zodResolver(formSchema),
         defaultValues: {
             clientId: budget?.clientId || "",
-            items: budget?.items ? (budget.items as unknown as { productId: string; productName: string; quantity: number; unitPrice: number; totalPrice: number }[]).map(item => ({
+            items: budget?.items ? (budget.items as unknown as { productId: string; productName: string; quantity: number; unitPriceInCents: number; totalPriceInCents: number }[]).map(item => ({
                 ...item,
-                unitPrice: item.unitPrice / 100, // Converter de centavos para reais
-                totalPrice: item.totalPrice / 100, // Converter de centavos para reais
-            })) : [{ productId: "", productName: "", quantity: 0, unitPrice: 0, totalPrice: 0 }],
+                unitPriceInCents: item.unitPriceInCents / 100, // Converter de centavos para reais
+                totalPriceInCents: item.totalPriceInCents / 100, // Converter de centavos para reais
+            })) : [{ productId: "", productName: "", quantity: 0, unitPriceInCents: 0, totalPriceInCents: 0 }],
             validUntil: budget?.validUntil ? new Date(budget.validUntil) : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 dias a partir de hoje
             status: (budget?.status as unknown as "offered" | "accepted" | "rejected" | "expired") || "offered",
         },
@@ -72,19 +73,25 @@ const UpsertBudgetForm = ({ budget, clients, products, onSuccess }: UpsertBudget
         },
     });
 
-
     const onSubmit = (values: z.infer<typeof formSchema>) => {
-        const total = values.items.reduce((sum, item) => sum + item.totalPrice, 0);
+        const totalInCents = values.items.reduce((sum, item) => sum + item.totalPriceInCents, 0);
 
-        upsertBudgetAction.execute({
+        const payload = {
             ...values,
             id: budget?.id,
-            total,
-        });
+            items: values.items.map(item => ({
+                ...item,
+                unitPriceInCents: Math.round(item.unitPriceInCents * 100),
+                totalPriceInCents: Math.round(item.totalPriceInCents * 100),
+            })),
+            totalInCents: Math.round(totalInCents * 100),
+        };
+
+        upsertBudgetAction.execute(payload);
     };
 
     const addItem = () => {
-        append({ productId: "", productName: "", quantity: 0, unitPrice: 0, totalPrice: 0 });
+        append({ productId: "", productName: "", quantity: 0, unitPriceInCents: 0, totalPriceInCents: 0 });
     };
 
     const updateItem = (index: number, field: string, value: string | number) => {
@@ -98,28 +105,28 @@ const UpsertBudgetForm = ({ budget, clients, products, onSuccess }: UpsertBudget
                     ...updatedItems[index],
                     productId: value as string,
                     productName: selectedProduct.name,
-                    unitPrice: selectedProduct.salePriceInCents / 100, // Converter de centavos para reais
-                    totalPrice: updatedItems[index].quantity * (selectedProduct.salePriceInCents / 100),
+                    unitPriceInCents: selectedProduct.salePriceInCents / 100, // Converter de centavos para reais
+                    totalPriceInCents: updatedItems[index].quantity * (selectedProduct.salePriceInCents / 100),
                 };
             }
         } else if (field === "quantity") {
             updatedItems[index] = {
                 ...updatedItems[index],
                 quantity: value as number,
-                totalPrice: (value as number) * updatedItems[index].unitPrice,
+                totalPriceInCents: (value as number) * updatedItems[index].unitPriceInCents,
             };
-        } else if (field === "unitPrice") {
+        } else if (field === "unitPriceInCents") {
             updatedItems[index] = {
                 ...updatedItems[index],
-                unitPrice: value as number,
-                totalPrice: updatedItems[index].quantity * (value as number),
+                unitPriceInCents: value as number,
+                totalPriceInCents: updatedItems[index].quantity * (value as number),
             };
         }
 
         form.setValue("items", updatedItems);
     };
 
-    const total = form.watch("items").reduce((sum, item) => sum + item.totalPrice, 0);
+    const total = form.watch("items").reduce((sum, item) => sum + item.totalPriceInCents, 0);
 
     return (
         <Dialog open={true} onOpenChange={() => onSuccess?.()}>
@@ -229,9 +236,6 @@ const UpsertBudgetForm = ({ budget, clients, products, onSuccess }: UpsertBudget
                                                                     <SelectItem key={product.id} value={product.id}>
                                                                         <div className="flex flex-col">
                                                                             <span className="font-medium">{product.name}</span>
-                                                                            {/* <span className="text-sm text-muted-foreground">
-                                                                                Estoque: {product.quantity_in_stock || 0}
-                                                                            </span> */}
                                                                         </div>
                                                                     </SelectItem>
                                                                 ))}
@@ -269,7 +273,34 @@ const UpsertBudgetForm = ({ budget, clients, products, onSuccess }: UpsertBudget
                                         <div className="flex items-center justify-between">
                                             <FormField
                                                 control={form.control}
-                                                name={`items.${index}.totalPrice`}
+                                                name={`items.${index}.unitPriceInCents`}
+                                                render={({ field }) => (
+                                                    <FormItem className="flex-1 max-w-xs">
+                                                        <FormLabel>Preço unitário</FormLabel>
+                                                        <NumericFormat
+                                                            value={field.value}
+                                                            onValueChange={(value) => {
+                                                                field.onChange(value.floatValue);
+                                                                updateItem(index, "unitPriceInCents", value.floatValue || 0);
+                                                            }}
+                                                            decimalScale={2}
+                                                            fixedDecimalScale
+                                                            decimalSeparator=","
+                                                            allowNegative={false}
+                                                            allowLeadingZeros={false}
+                                                            thousandSeparator="."
+                                                            customInput={Input}
+                                                            prefix="R$"
+                                                            className="text-sm"
+                                                        />
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+
+                                            <FormField
+                                                control={form.control}
+                                                name={`items.${index}.totalPriceInCents`}
                                                 render={({ field }) => (
                                                     <FormItem className="flex-1 max-w-xs">
                                                         <FormLabel>Total do item</FormLabel>
@@ -284,6 +315,7 @@ const UpsertBudgetForm = ({ budget, clients, products, onSuccess }: UpsertBudget
                                                     </FormItem>
                                                 )}
                                             />
+
                                             <Button
                                                 type="button"
                                                 variant="destructive"

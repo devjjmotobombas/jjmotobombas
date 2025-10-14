@@ -4,15 +4,15 @@ export const budgetItemSchema = z.object({
     productId: z.string().uuid(),
     productName: z.string(),
     quantity: z.number().min(0, { message: "Quantidade deve ser maior ou igual a 0" }),
-    unitPrice: z.number().min(0, { message: "Preço unitário deve ser maior ou igual a 0" }),
-    totalPrice: z.number().min(0, { message: "Preço total deve ser maior ou igual a 0" }),
+    unitPriceInCents: z.number().min(1, { message: "Preço unitário é obrigatório." }),
+    totalPriceInCents: z.number().min(1, { message: "Preço total é obrigatório." }),
 });
 
 export const upsertBudgetSchema = z.object({
     id: z.string().uuid().optional(),
     clientId: z.string().uuid({ message: "Cliente é obrigatório" }),
     items: z.array(budgetItemSchema).min(1, { message: "Adicione pelo menos um item ao orçamento" }),
-    total: z.number().min(0, { message: "Total deve ser maior ou igual a 0" }),
+    totalInCents: z.number().min(1, { message: "Total é obrigatório." }),
     validUntil: z.date({ message: "Data de validade é obrigatória" }),
     status: z.enum(["offered", "accepted", "rejected", "expired"]).default("offered"),
 });

@@ -107,15 +107,15 @@ const BudgetCard = ({ budget, onEdit, onDelete }: BudgetCardProps) => {
                 productId: item.productId,
                 productName: item.productName,
                 quantity: item.quantity,
-                unitPrice: item.unitPrice,
-                totalPrice: item.totalPrice,
+                unitPriceInCents: item.unitPriceInCents,
+                totalPriceInCents: item.totalPriceInCents,
             }));
 
             // Criar a venda
             await upsertSale({
                 clientId: budget.client.id,
                 items: saleItems,
-                total: budget.totalInCents,
+                totalInCents: budget.totalInCents,
                 paymentMethod: paymentMethod,
                 status: "completed",
                 budgetId: budget.id
@@ -176,8 +176,8 @@ const BudgetCard = ({ budget, onEdit, onDelete }: BudgetCardProps) => {
         productId: string;
         productName: string;
         quantity: number;
-        unitPrice: number;
-        totalPrice: number;
+        unitPriceInCents: number;
+        totalPriceInCents: number;
     }>;
 
     const validUntil = new Date(budget.validUntil);
@@ -230,11 +230,11 @@ const BudgetCard = ({ budget, onEdit, onDelete }: BudgetCardProps) => {
                                     <div className="flex-1">
                                         <span className="font-medium">{item.productName}</span>
                                         <span className="text-muted-foreground ml-2">
-                                            x{item.quantity} - {formatCurrencyInCents(item.unitPrice)}
+                                            x{item.quantity}
                                         </span>
                                     </div>
                                     <span className="font-medium">
-                                        {formatCurrencyInCents(item.totalPrice)}
+                                        {formatCurrencyInCents(item.totalPriceInCents)}
                                     </span>
                                 </div>
                             ))}
@@ -363,11 +363,11 @@ const BudgetCard = ({ budget, onEdit, onDelete }: BudgetCardProps) => {
                                         <div className="flex-1">
                                             <span className="font-medium">{item.productName}</span>
                                             <span className="text-muted-foreground ml-2">
-                                                x{item.quantity} - {formatCurrencyInCents(item.unitPrice)}
+                                                x{item.quantity} - {formatCurrencyInCents(item.unitPriceInCents)}
                                             </span>
                                         </div>
                                         <span className="font-medium">
-                                            {formatCurrencyInCents(item.totalPrice)}
+                                            {formatCurrencyInCents(item.totalPriceInCents)}
                                         </span>
                                     </div>
                                 ))}

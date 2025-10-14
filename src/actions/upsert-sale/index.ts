@@ -23,7 +23,7 @@ export const upsertSale = actionClient
             throw new Error("Enterprise not found");
         }
 
-        const { id, clientId, items, total, paymentMethod, status, budgetId } = parsedInput;
+        const { id, clientId, items, totalInCents, paymentMethod, status, budgetId } = parsedInput;
 
         // Se `id` estiver presente, atualiza a venda existente
         let saleId = id;
@@ -34,7 +34,7 @@ export const upsertSale = actionClient
                 .update(salesTable)
                 .set({
                     items,
-                    total,
+                    total: totalInCents,
                     paymentMethod,
                     status,
                     budgetId,
@@ -53,7 +53,7 @@ export const upsertSale = actionClient
                 .values({
                     clientId,
                     items,
-                    total,
+                    total: totalInCents,
                     paymentMethod,
                     status,
                     budgetId,
@@ -67,7 +67,7 @@ export const upsertSale = actionClient
                 saleId: saleId!,
                 productId: item.productId,
                 productQty: item.quantity,
-                productPrice: item.unitPrice,
+                productPrice: item.unitPriceInCents,
             }));
 
             await db.insert(saleItemsTable).values(saleItems);
